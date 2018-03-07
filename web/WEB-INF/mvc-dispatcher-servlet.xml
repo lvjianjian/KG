@@ -22,7 +22,7 @@
 
     <mvc:view-controller path="/" view-name="forward:/search/test.do"/>
 
-    <context:component-scan base-package="cn.youedata.KG.Controller"/>
+    <context:component-scan base-package="cn.youedata.KG"/>
 
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/pages/"/>

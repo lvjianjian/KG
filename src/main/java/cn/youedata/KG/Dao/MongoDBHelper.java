@@ -33,7 +33,7 @@ public class MongoDBHelper {
             MongoClientOptions myOptions = build.build();
             try {
                 //数据库连接实例
-                mongoClient = new MongoClient(Global.MONGODB_IP, myOptions);
+                mongoClient = new MongoClient(Global.MONGODB_IP+":"+Global.MONGODB_PORT, myOptions);
             } catch (MongoException e) {
                 e.printStackTrace();
             }
