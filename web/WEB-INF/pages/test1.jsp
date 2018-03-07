@@ -7,13 +7,17 @@
     <style type="text/css">
         /* cytoscape graph */
         #cy {
-            height: 1000px;
-            width: 1500px;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 999;
             background-color: #f9f9f9;
         }
     </style>
-    <script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
-    <script src="http://cdn.bootcss.com/cytoscape/2.3.16/cytoscape.min.js"></script>
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/cytoscape.min.js"></script>
 </head>
 <body>
 <div id="cy"></div>
@@ -24,9 +28,9 @@
         function (data) {
             draw_kg(data)
         }, "json");
-    
+
     function replace_a_tag(str) {
-        return str.replace(/<a>/g,"").replace(/<\/a>/g,"")
+        return str.replace(/<a>/g, "").replace(/<\/a>/g, "")
     }
 
     function draw_kg(data) {
@@ -35,14 +39,21 @@
             style: [
                 {
                     selector: 'node',
-                    css: {'background-color': '#6FB1FC', 'content': 'data(id)'}
+                    css:
+                        {
+                            'background-color': '#6FB1FC',
+                            'content': 'data(id)',
+                            'text-valign': 'center',
+                            'text-halign': 'center',
+                        }
                 },
-                // { selector: 'node',
-                //     css: {'background-color': '#F5A45D', 'content': 'data(title)'}
-                // },
                 {
                     selector: 'edge',
-                    css: {'content': 'data(predicate)', 'target-arrow-shape': 'triangle'}
+                    css:
+                        {
+                            'content': 'data(predicate)',
+                            'target-arrow-shape': 'triangle'
+                        }
                 },
                 {
                     selector: '$node > node',
@@ -58,7 +69,7 @@
                 },
             ],
             charset: 'UTF-8',
-            layout: {name: 'grid'}
+            layout: {name: 'concentric'}
         });
 
         cy.add({group: "nodes", data: {id: entity}})
@@ -67,16 +78,21 @@
             if ($.type(o) === "string") {//string
                 o = replace_a_tag(o)
                 cy.add({group: "nodes", data: {id: o}})
-                cy.add({group: "edges", data: {source: entity,target:o,predicate:p}})
+                cy.add({group: "edges", data: {source: entity, target: o, predicate: p}})
             } else {//array
                 cy.add({group: "nodes", data: {id: p}})
-                cy.add({group: "edges", data: {source: entity,target:p,predicate:p}})
-                $.each(o,function (index, subo) {
+                cy.add({group: "edges", data: {source: entity, target: p, predicate: p}})
+                $.each(o, function (index, subo) {
                     subo = replace_a_tag(subo)
-                    cy.add({group: "nodes", data: {id: subo,parent:p}})
+                    cy.add({group: "nodes", data: {id: subo, parent: p}})
                 })
             }
         });
+        var layout = cy.layout({
+            name: 'circle'
+        });
+
+        layout.run();
     }
 
 

@@ -49,7 +49,7 @@ public class QueryController {
     public List<String> getEntityNamesByMention(String mention) {
         List<String> l = new ArrayList<>();
         if (mention != null) {
-            List<Document> documents = ment2EntDao.find(Global.KG_COLLECTION_NAME_MENT2ENT, mention);
+            List<Document> documents = ment2EntDao.find(Global.KG_COLLECTION_MENT2ENT_FIELD_NAME_MENTION, mention);
             if (documents != null)
                 for (Document doc : documents) {
                     l.add(doc.getString(Global.KG_COLLECTION_MENT2ENT_FIELD_NAME_ENTITY));
