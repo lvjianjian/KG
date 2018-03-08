@@ -17,12 +17,10 @@
         }
     </style>
 
-    <link rel="stylesheet" type="text/css" href="/css/cytoscape.js-panzoom.css">
-    <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
-
-    <script src="/js/jquery-3.3.1.min.js"></script>
+    <%--<script src="/js/youe_cytoscape.js"></script>--%>
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
     <script src="/js/cytoscape.min.js"></script>
-    <script src="/js/cytoscape-panzoom.js"></script>
+
 
 </head>
 <body>
@@ -33,17 +31,20 @@
     // var panzoom = require('cytoscape-panzoom');
     //
     // panzoom( cytoscape );
-    var entity = "纽约（南拳妈妈演唱歌曲）"
+    var entity = "凯蒂·普莱斯"
     $.get("info.do", {entity: entity},
         function (data) {
-            draw_kg(data)
+            draw_kg(entity, data)
         }, "json");
 
+
+    //去除所有a标签
     function replace_a_tag(str) {
         return str.replace(/<a>/g, "").replace(/<\/a>/g, "")
     }
 
-    function draw_kg(data) {
+    //画kg图
+    function draw_kg(entity, data) {
         var cy = cytoscape({
             container: document.getElementById('cy'),
             style: [
@@ -92,6 +93,10 @@
         cy.add({group: "nodes", data: {id: entity}})
         $.each(data, function (p, o) {
             p = replace_a_tag(p)
+            if(p === "TYPE" || p ==="TAG"
+                || p === "DESC" || p ==="CATEGORY_ZH")
+                return
+
             if ($.type(o) === "string") {//string
                 o = replace_a_tag(o)
                 cy.add({group: "nodes", data: {id: o}})
@@ -106,29 +111,9 @@
             }
         });
         var layout = cy.layout({
-            name: 'circle'
+            name: 'cose'
         });
         layout.run();
-        var defaults = {
-            zoomFactor: 0.05, // zoom factor per zoom tick
-            zoomDelay: 45, // how many ms between zoom ticks
-            minZoom: 0.1, // min zoom level
-            maxZoom: 10, // max zoom level
-            fitPadding: 50, // padding when fitting
-            panSpeed: 10, // how many ms in between pan ticks
-            panDistance: 10, // max pan distance per tick
-            panDragAreaSize: 75, // the length of the pan drag box in which the vector for panning is calculated (bigger = finer control of pan speed and direction)
-            panMinPercentSpeed: 0.25, // the slowest speed we can pan by (as a percent of panSpeed)
-            panInactiveArea: 8, // radius of inactive area in pan drag box
-            panIndicatorMinOpacity: 0.5, // min opacity of pan indicator (the draggable nib); scales from this to 1.0
-            zoomOnly: false, // a minimal version of the ui only with zooming (useful on systems with bad mousewheel resolution)
-            fitSelector: undefined, // selector of elements to fit
-            animateOnFit: function () { // whether to animate on fit
-                return false;
-            }
-        }
-        cy.panzoom(defaults);
-
     }
 
 

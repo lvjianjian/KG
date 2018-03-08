@@ -199,8 +199,14 @@
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
 <!-- app.js -->
+<<<<<<< Updated upstream
 <script src="${pageContext.request.contextPath}/js/cytoscape.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/app.js" type="text/javascript"></script>
+=======
+<script src="/js/cytoscape.min.js"></script>
+<script src="/js/youe_cytoscape.js"></script>
+<script src="/js/app.js" type="text/javascript"></script>
+>>>>>>> Stashed changes
 
 <script>
     function hidden_info() {
@@ -339,11 +345,14 @@
 
     })
 
+
+    //去除所有a标签
     function replace_a_tag(str) {
         return str.replace(/<a>/g, "").replace(/<\/a>/g, "")
     }
 
-    function draw_kg(entity,data) {
+    //画kg图
+    function draw_kg(entity, data) {
         var cy = cytoscape({
             container: document.getElementById('cy'),
             style: [
@@ -410,11 +419,13 @@
             }
         });
         var layout = cy.layout({
-            name: 'circle'
+            name: 'cose'
         });
         layout.run();
-
     }
+
+
+
 </script>
 </body>
 

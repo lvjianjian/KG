@@ -8,8 +8,10 @@ import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.function.BiConsumer;
 
@@ -44,7 +46,7 @@ public class QueryController {
      * @param mention
      * @return List<String></>
      */
-    @RequestMapping("/query.do")
+    @RequestMapping(value = "/query.do")
     @ResponseBody
     public List<String> getEntityNamesByMention(String mention) {
         List<String> l = new ArrayList<>();
@@ -70,7 +72,7 @@ public class QueryController {
      * @param entity
      * @return map 谓语对应的宾语只有一个，则value为string，否则为一个list
      */
-    @RequestMapping("/info.do")
+    @RequestMapping(value = "/info.do")
     @ResponseBody
     public Map<String, Object> getAllInfosByEntity(String entity) {
         List<Document> relationsByEntity = tripleDao.find(Global.KG_COLLECTION_TRIPLES_FIELD_NAME_SUBJECT, entity);
