@@ -16,13 +16,23 @@
             background-color: #f9f9f9;
         }
     </style>
+
+    <link rel="stylesheet" type="text/css" href="/css/cytoscape.js-panzoom.css">
+    <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
+
     <script src="/js/jquery-3.3.1.min.js"></script>
     <script src="/js/cytoscape.min.js"></script>
+    <script src="/js/cytoscape-panzoom.js"></script>
+
 </head>
 <body>
 <div id="cy"></div>
 </body>
 <script>
+    // var cytoscape = require('cytoscape');
+    // var panzoom = require('cytoscape-panzoom');
+    //
+    // panzoom( cytoscape );
     var entity = "纽约（南拳妈妈演唱歌曲）"
     $.get("info.do", {entity: entity},
         function (data) {
@@ -45,6 +55,7 @@
                             'content': 'data(id)',
                             'text-valign': 'center',
                             'text-halign': 'center',
+                            'padding-top': '10px',
                         }
                 },
                 {
@@ -52,7 +63,12 @@
                     css:
                         {
                             'content': 'data(predicate)',
-                            'target-arrow-shape': 'triangle'
+                            'target-arrow-shape': 'triangle',
+                            'target-arrow-color': '#f2f08c',
+                            'line-color': '#f2f08c',
+                            'curve-style':'bezier',
+                            'arrow-scale':1.5,
+                            // 'target-distance-from-node':10
                         }
                 },
                 {
@@ -64,7 +80,8 @@
                         'padding-right': '10px',
                         'text-valign': 'top',
                         'text-halign': 'center',
-                        'background-color': '#bbb'
+                        'background-color': '#bbb',
+                        // 'opacity':0.5,
                     }
                 },
             ],
@@ -91,8 +108,27 @@
         var layout = cy.layout({
             name: 'circle'
         });
-
         layout.run();
+        var defaults = {
+            zoomFactor: 0.05, // zoom factor per zoom tick
+            zoomDelay: 45, // how many ms between zoom ticks
+            minZoom: 0.1, // min zoom level
+            maxZoom: 10, // max zoom level
+            fitPadding: 50, // padding when fitting
+            panSpeed: 10, // how many ms in between pan ticks
+            panDistance: 10, // max pan distance per tick
+            panDragAreaSize: 75, // the length of the pan drag box in which the vector for panning is calculated (bigger = finer control of pan speed and direction)
+            panMinPercentSpeed: 0.25, // the slowest speed we can pan by (as a percent of panSpeed)
+            panInactiveArea: 8, // radius of inactive area in pan drag box
+            panIndicatorMinOpacity: 0.5, // min opacity of pan indicator (the draggable nib); scales from this to 1.0
+            zoomOnly: false, // a minimal version of the ui only with zooming (useful on systems with bad mousewheel resolution)
+            fitSelector: undefined, // selector of elements to fit
+            animateOnFit: function () { // whether to animate on fit
+                return false;
+            }
+        }
+        cy.panzoom(defaults);
+
     }
 
 

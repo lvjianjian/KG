@@ -16,6 +16,15 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
+
+    <style type="text/css">
+        /* cytoscape graph */
+        #cy {
+            width: 1000px;
+            height: 500px;
+            background-color: #f9f9f9;
+        }
+    </style>
 </head>
 
 <body class="skin-black fixed">
@@ -203,11 +212,13 @@
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<%--<script src="/js/jquery-3.3.1.min.js"></script>--%>
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
 <!-- app.js -->
+<script src="/js/cytoscape.min.js"></script>
 <script src="/js/app.js" type="text/javascript"></script>
 
 <script>
@@ -242,7 +253,6 @@
         $.get("/search/query.do", {mention: mention},
             function (ment_list) {
                 var len = ment_list.length;
-                alert(len);
                 var content;    //查询结果展示内容
                 if (len === 0) {    //查询不存在
                     content = "<p class='well'>您查询的：<b>" + mention + "</b>不存在，请检查！"
@@ -332,6 +342,9 @@
                 $("#infobox .box-body table tbody").html(infobox);
                 $("#dbpedia-type .box-body table tbody").html(dbpedia_type);
                 $("#baidu-tag .box-body table tbody").html(baidu_tag);
+                $("#search-result").html("<div id=\"cy\"></div>")
+                draw_kg(entity, entity_info)
+
             }, "json");
     }
 
@@ -344,6 +357,83 @@
         }
 
     })
+
+    function replace_a_tag(str) {
+        return str.replace(/<a>/g, "").replace(/<\/a>/g, "")
+    }
+
+    function draw_kg(entity,data) {
+        var cy = cytoscape({
+            container: document.getElementById('cy'),
+            style: [
+                {
+                    selector: 'node',
+                    css:
+                        {
+                            'background-color': '#6FB1FC',
+                            'content': 'data(id)',
+                            'text-valign': 'center',
+                            'text-halign': 'center',
+                            'padding-top': '10px',
+                        }
+                },
+                {
+                    selector: 'edge',
+                    css:
+                        {
+                            'content': 'data(predicate)',
+                            'target-arrow-shape': 'triangle',
+                            'target-arrow-color': '#f2f08c',
+                            'line-color': '#f2f08c',
+                            'curve-style':'bezier',
+                            'arrow-scale':1.5,
+                            // 'target-distance-from-node':10
+                        }
+                },
+                {
+                    selector: '$node > node',
+                    css: {
+                        'padding-top': '10px',
+                        'padding-left': '10px',
+                        'padding-bottom': '10px',
+                        'padding-right': '10px',
+                        'text-valign': 'top',
+                        'text-halign': 'center',
+                        'background-color': '#bbb',
+                        // 'opacity':0.5,
+                    }
+                },
+            ],
+            charset: 'UTF-8',
+            layout: {name: 'concentric'}
+        });
+
+        cy.add({group: "nodes", data: {id: entity}})
+        $.each(data, function (p, o) {
+            p = replace_a_tag(p)
+            if(p === "TYPE" || p ==="TAG"
+                || p === "DESC" || p ==="CATEGORY_ZH")
+                return
+
+            if ($.type(o) === "string") {//string
+                o = replace_a_tag(o)
+                cy.add({group: "nodes", data: {id: o}})
+                cy.add({group: "edges", data: {source: entity, target: o, predicate: p}})
+            } else {//array
+                cy.add({group: "nodes", data: {id: p}})
+                cy.add({group: "edges", data: {source: entity, target: p, predicate: p}})
+                $.each(o, function (index, subo) {
+                    subo = replace_a_tag(subo)
+                    cy.add({group: "nodes", data: {id: subo, parent: p}})
+                })
+            }
+        });
+        var layout = cy.layout({
+            name: 'circle'
+        });
+        layout.run();
+
+    }
 </script>
 </body>
 

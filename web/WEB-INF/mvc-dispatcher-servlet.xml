@@ -20,7 +20,7 @@
     <!--</bean>-->
 
 
-    <mvc:view-controller path="/" view-name="forward:/search/test.do"/>
+    <mvc:view-controller path="/" view-name="forward:/view/index"/>
 
     <context:component-scan base-package="cn.youedata.KG"/>
 
@@ -33,4 +33,7 @@
     <mvc:resources mapping="/js/**" location="/WEB-INF/js/"/>
     <mvc:resources mapping="/css/**" location="/WEB-INF/css/"/>
     <mvc:resources mapping="/img/**" location="/WEB-INF/img/"/>
+    <mvc:resources mapping="/fonts/**" location="/WEB-INF/fonts/" />
+    <mvc:resources mapping="/less/**" location="/WEB-INF/less/" />
+    <mvc:resources mapping="/scss/**" location="/WEB-INF/scss/" />
 </beans>
