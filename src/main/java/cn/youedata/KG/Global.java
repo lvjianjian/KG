@@ -7,7 +7,7 @@ public class Global {
     /**
      * 数据库名字
      */
-    public static String KG_DB_NAME = "cndbpedia";
+    public static String KG_DB_NAME = "ada_dbpedia";
 
     /**
      * 数据集合id字段名
