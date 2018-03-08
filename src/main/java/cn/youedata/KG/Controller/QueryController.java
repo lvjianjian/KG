@@ -42,7 +42,7 @@ public class QueryController {
      * 通过mention获取所有实体名字
      *
      * @param mention
-     * @return
+     * @return List<String></>
      */
     @RequestMapping("/query.do")
     @ResponseBody
@@ -68,7 +68,7 @@ public class QueryController {
     /**
      * 通过实体名字获取所有与实体有关的关系
      * @param entity
-     * @return
+     * @return map 谓语对应的宾语只有一个，则value为string，否则为一个list
      */
     @RequestMapping("/info.do")
     @ResponseBody
@@ -96,34 +96,6 @@ public class QueryController {
             }
         }
 
-//        List<Document> nodes = new ArrayList<>();
-//        List<Document> edges = new ArrayList<>();
-//        Document data = new Document().append("nodes", nodes).append("edges", edges);
-//        nodes.add(new Document("data", new Document("id", entity)));
-//        map.forEach(new BiConsumer<String, Object>() {
-//            @Override
-//            public void accept(String s, Object o) {
-//                if (o instanceof String) {
-//                    nodes.add(new Document("data", new Document().append("id", o)));
-//                    edges.add(new Document("data", new Document().append("target", o)
-//                            .append("source", entity)
-//                            .append("predicate", s)));
-//                } else {
-//                    List<String> o1 = (List<String>) o;
-//                    nodes.add(new Document("data", new Document().append("id", s)));
-//                    edges.add(new Document("data", new Document().append("target", s)
-//                            .append("source", entity)
-//                            .append("predicate", s)));
-//                    for (int i = 0; i < o1.size(); i++) {
-//                        String objective = o1.get(i);
-//                        nodes.add(new Document("data", new Document().append("id", objective).append("parent", s)));
-//
-//                    }
-//                }
-//            }
-//        });
-//
-//        map.put("cytoscape_json", data.toJson());
         return map;
     }
 
