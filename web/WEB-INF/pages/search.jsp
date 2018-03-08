@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <!-- Theme style -->
-    <link href="/css/app.css" rel="stylesheet" type="text/css"/>
+    <link href="${pageContext.request.contextPath}/css/app.css" rel="stylesheet" type="text/css"/>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -29,8 +29,8 @@
 
 <body class="skin-black fixed">
 <header class="header">
-    <a href="index" class="logo">
-        <img src="/img/LOGO01.png" style="height: 34px;">
+    <a href="${pageContext.request.contextPath}/view/index" class="logo">
+        <img src="${pageContext.request.contextPath}/img/LOGO01.png" style="height: 34px;">
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top" role="navigation" style="background-color: RGB(68,68,68);">
@@ -51,10 +51,10 @@
         <section class="sidebar">
             <!-- sidebar menu: : style can be found in sidebar.less -->
             <ul class="sidebar-menu">
-                <li><a href="index">Introduction</a></li>
-                <li class="active"><a href="search">Search</a></li>
-                <li><a href="api">API</a></li>
-                <li><a href="contributors">Contributors</a></li>
+                <li><a href="${pageContext.request.contextPath}/view/index">Introduction</a></li>
+                <li class="active"><a href="${pageContext.request.contextPath}/view/search">Search</a></li>
+                <li><a href="${pageContext.request.contextPath}/view/api">API</a></li>
+                <li><a href="${pageContext.request.contextPath}/view/contributors">Contributors</a></li>
             </ul>
         </section>
         <!-- /.sidebar -->
@@ -72,25 +72,6 @@
             <!-- Main row -->
             <div class="row">
                 <section class="col-lg-12 ">
-                    <!-- 实体搜索
-                    <div class="nav-tabs-custom">
-                        <ul class="nav nav-tabs pull-right">
-                            <li class="pull-left header">实体搜索</li>
-                            <li class="pull-right row">
-                                <div class="form-inline">
-                                    <input type="text" name="entity_name" class="form-control input-sm" id="entity_name"
-                                           style="width: 150px;" placeholder="Entity">
-                                    <button type="button" class="btn btn-sm btn-default" id="entity_search">Search
-                                    </button>
-                                </div>
-                            </li>
-                        </ul>
-                        <div class="tab-content no-padding">
-                            <div id="search-result" class="tab-pane active">
-
-                            </div>
-                        </div>
-                    </div>--><!-- /.实体搜索 -->
                     <div class="box box-solid box-danger">
                         <div class="box-header">
                             <h3 class="box-title">实体搜索</h3>
@@ -218,8 +199,8 @@
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
 <!-- app.js -->
-<script src="/js/cytoscape.min.js"></script>
-<script src="/js/app.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/js/cytoscape.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/app.js" type="text/javascript"></script>
 
 <script>
     function hidden_info() {
@@ -250,7 +231,7 @@
      * @param mention
      */
     function ment_search(mention) {
-        $.get("/search/query.do", {mention: mention},
+        $.get("${pageContext.request.contextPath}/search/query.do", {mention: mention},
             function (ment_list) {
                 var len = ment_list.length;
                 var content;    //查询结果展示内容
@@ -276,7 +257,7 @@
      * @param entity
      */
     function entity_search(entity) {
-        $.get("/search/info.do", {entity: entity},
+        $.get("${pageContext.request.contextPath}/search/info.do", {entity: entity},
             function (entity_info) {
                 var information, infobox, dbpedia_type, baidu_tag;
                 $.each(entity_info, function (key, value) {
