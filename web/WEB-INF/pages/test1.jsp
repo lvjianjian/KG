@@ -19,7 +19,7 @@
 
     <%--<script src="/js/youe_cytoscape.js"></script>--%>
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
-    <script src="/js/cytoscape.min.js"></script>
+    <script src="/js/cytoscape.js"></script>
     <script src="/js/youe_cytoscape.js"></script>
 
 

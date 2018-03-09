@@ -4,10 +4,11 @@
  * @param entityInfos   实体内容
  * @param entityNames   多义词列表
  */
-function displayInfo(mention, entityInfos, entityNames) {
+function displayInfo(mention,entity, entityInfos, entityNames, myChart) {
     if (!$.isEmptyObject(entityInfos)) {
         //有实体信息，画图，显示实体信息
         displayPanel(entityInfos);
+        draw_kg(entity,entityInfos,myChart,kg_option_1)
         if (entityNames.length > 1) {
             //显示多义词列表
             displayEntityNames(mention, entityNames)

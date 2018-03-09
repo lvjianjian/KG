@@ -5,12 +5,15 @@ import cn.youedata.KG.Dao.Ment2EntDaoImpl;
 import cn.youedata.KG.Dao.TripleDaoImpl;
 import cn.youedata.KG.Global;
 import cn.youedata.KG.Service.QueryService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -31,9 +34,21 @@ public class QueryController {
     QueryService queryService;
 
 
-    @RequestMapping("/test1.do")
-    public String test1() {
-        return "test1";
+    @RequestMapping("/test3.do")
+    public ModelAndView test1(String entity) {
+        ModelAndView modelAndView = new ModelAndView("test3");
+        Map<String, Object> allInfosByEntity = queryService.getAllInfosByEntity(entity);
+        ObjectMapper mapper = new ObjectMapper();
+        modelAndView.addObject("entity",entity);
+        try {
+            String json = mapper.writeValueAsString(allInfosByEntity);
+            modelAndView.addObject("triples",json);
+
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return modelAndView;
     }
 
 

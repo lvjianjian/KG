@@ -39,6 +39,7 @@ public class QueryService {
      */
     public List<String> getEntityNamesByMention(String mention) {
         List<String> l = new ArrayList<>();
+        if(mention == null || mention.equals("")) return l;
         if (mention != null) {
             List<Document> documents = ment2EntDao.find(Global.KG_COLLECTION_MENT2ENT_FIELD_NAME_MENTION, mention);
             if (documents != null)
@@ -58,6 +59,7 @@ public class QueryService {
      */
     public Map<String, Object> getAllInfosByEntity(String entity) {
         Map<String, Object> map = new HashMap<>();
+        if(entity == null || entity.equals("")) return map;
         List<Document> relationsByEntity = tripleDao.find(Global.KG_COLLECTION_TRIPLES_FIELD_NAME_SUBJECT, entity);
         if (relationsByEntity == null || relationsByEntity.size() == 0) return map;
 
