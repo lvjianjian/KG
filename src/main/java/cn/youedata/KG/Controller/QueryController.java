@@ -70,15 +70,16 @@ public class QueryController {
     /**
      * 通过实体名字获取所有与实体有关的关系
      * @param entity
-     * @return map 谓语对应的宾语只有一个，则value为string，否则为一个list
+     * @return map 谓语对应的宾语只有一个，则value为string，否则为一个list,
      */
     @RequestMapping(value = "/info.do")
     @ResponseBody
     public Map<String, Object> getAllInfosByEntity(String entity) {
-        List<Document> relationsByEntity = tripleDao.find(Global.KG_COLLECTION_TRIPLES_FIELD_NAME_SUBJECT, entity);
-        if (relationsByEntity == null || relationsByEntity.size() == 0) return null;
-
         Map<String, Object> map = new HashMap<>();
+        List<Document> relationsByEntity = tripleDao.find(Global.KG_COLLECTION_TRIPLES_FIELD_NAME_SUBJECT, entity);
+        if (relationsByEntity == null || relationsByEntity.size() == 0) return map;
+
+
         for (int i = 0; i < relationsByEntity.size(); i++) {
             Document document = relationsByEntity.get(i);
             String predicate = document.getString(Global.KG_COLLECTION_TRIPLES_FIELD_NAME_PREDICATE);
