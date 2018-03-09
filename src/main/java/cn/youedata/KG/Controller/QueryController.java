@@ -58,11 +58,11 @@ public class QueryController {
                 }
 
         }
-        if (l.size() == 0) {
-            List<Document> documents = entityDao.find(mention);
-            if (documents != null && documents.size() != 0)
-                l.add(mention);
-        }
+//        if (l.size() == 0) {
+//            List<Document> documents = entityDao.find(mention);
+//            if (documents != null && documents.size() != 0)
+//                l.add(mention);
+//        }
         return l;
     }
 
