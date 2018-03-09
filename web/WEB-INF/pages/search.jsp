@@ -74,19 +74,23 @@
                 <section class="col-lg-12 ">
                     <div class="box box-solid box-danger">
                         <div class="box-header">
-                            <h3 class="box-title">实体搜索</h3>
+                            <%--<h3 class="box-title">实体搜索</h3>--%>
                             <div class="box-tools pull-right">
-                                <div class="form-inline">
-                                    <input type="text" name="entity_name" class="form-control input-sm" id="entity_name"
-                                           style="width: 150px;" placeholder="Entity">
-                                    <button type="button" class="btn btn-sm btn-default bg-gray" id="entity_search">Search
-                                    </button>
-                                </div>
+                                <form class="input-group" action="${pageContext.request.contextPath}/view/search"
+                                      method="get">
+                                    <input name="mention" type="text" class="form-control" placeholder="Search for...">
+                                    <span class="input-group-btn">
+                                        <input class="btn btn-default bg-gray" type="submit" value="Search"></input>
+                                    </span>
+                                </form>
                             </div>
                         </div>
 
                         <div id="search-result" class="box-body">
-
+                            <p id="entity-list" class="well hidden">
+                            </p>
+                            <div id="entity-graph" class="panel panel-default hidden">
+                            </div>
                         </div><!-- /.box-body -->
                     </div>
 
@@ -101,7 +105,6 @@
                         </div>
                         <div class="box-body">
                             <p class="well">
-                                .......
                             </p>
                         </div><!-- /.box-body -->
                     </div><!-- /.box  Information -->
@@ -117,18 +120,9 @@
                         </div>
                         <div class="box-body">
                             <table class="table table-striped text-center">
-                                <tr class="row">
-                                    <td style="width: 50%">属性</td>
-                                    <td style="width: 50%">值</td>
-                                </tr>
-                                <tr class="row">
-                                    <td style="width: 50%">属性</td>
-                                    <td style="width: 50%">值</td>
-                                </tr>
-                                <tr class="row">
-                                    <td style="width: 50%">属性</td>
-                                    <td style="width: 50%">值</td>
-                                </tr>
+                                <tbody>
+
+                                </tbody>
                             </table>
                         </div><!-- /.box-body -->
                     </div><!-- /.box -->
@@ -144,19 +138,9 @@
                         </div>
                         <div class="box-body">
                             <table class="table table-striped text-center">
-                                <tr class="row">
-                                    <td style="width: 50%"><a href="https://www.w3.org/1999/02/22-rdf-syntax-ns#type"
-                                                              target="_black">rdf:type</a></td>
-                                    <td style="width: 50%"><a href="http://dbpedia.org/ontology/Organisation" target="_black">http://dbpedia.org/ontology/Organisation</a>
-                                    </td>
-                                </tr>
-                                <tr class="row">
-                                    <td style="width: 50%"><a href="https://www.w3.org/1999/02/22-rdf-syntax-ns#type"
-                                                              target="_black">rdf:type</a></td>
-                                    <td style="width: 50%"><a href="http://dbpedia.org/ontology/Organisation" target="_black">http://dbpedia.org/ontology/Organisation</a>
-                                    </td>
-                                </tr>
+                                <tbody>
 
+                                </tbody>
                             </table>
                         </div><!-- /.box-body -->
                     </div><!-- /.box -->
@@ -172,15 +156,9 @@
                         </div>
                         <div class="box-body">
                             <table class="table table-striped text-center">
-                                <tr class="row">
-                                    <td style="width: 50%">标签</td>
-                                    <td style="width: 50%">大学</td>
-                                </tr>
-                                <tr class="row">
-                                    <td style="width: 50%">标签</td>
-                                    <td style="width: 50%">教育机构</td>
-                                </tr>
+                                <tbody>
 
+                                </tbody>
                             </table>
                         </div><!-- /.box-body -->
                     </div><!-- /.box -->
@@ -203,147 +181,168 @@
 <script src="${pageContext.request.contextPath}/js/cytoscape.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/app.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/js/youe_cytoscape.js" type="text/javascript"></script>
-
+<script src="${pageContext.request.contextPath}/js/search.js" ></script>
 
 <script>
-    function hidden_info() {
-        $("#search-result").empty();
 
-        if (!$("#information").hasClass("hidden")) {
-            $("#information").addClass("hidden");
-        }
-        if (!$("#infobox").hasClass("hidden")) {
-            $("#infobox").addClass("hidden");
-        }
-        if (!$("#dbpedia-type").hasClass("hidden")) {
-            $("#dbpedia-type").addClass("hidden");
-        }
-        if (!$("#baidu-tag").hasClass("hidden")) {
-            $("#baidu-tag").addClass("hidden");
-        }
-    }
-
-    $("#entity_search").click(function () {
-        hidden_info();
-        var mention = $("#entity_name").val();
-        ment_search(mention);
+    $(function () {
+        var mention = '${mention}'
+        var entityNames = ${entityNames};
+        var entityInfos = ${entityInfos};
+        displayInfo(mention, entityInfos, entityNames);
     });
 
     /**
-     * mention查询
-     * @param mention
+     * 多义词列表中，a标签的点击跳转
      */
-    function ment_search(mention) {
-        $.get("${pageContext.request.contextPath}/search/query.do", {mention: mention},
-            function (ment_list) {
-                var len = ment_list.length;
-                var content;    //查询结果展示内容
-                if (len === 0) {    //查询不存在
-                    content = "<p class='well'>您查询的：<b>" + mention + "</b>不存在，请检查！"
-
-                } else if (len === 1) { //长度为1，说明只有一个实体，直接查询实体
-                    entity_search(ment_list[0]);
-                } else {
-                    content = "<table class=\"table table-striped text-center\">";
-                    $.each(ment_list, function (i, m) {
-                        content += ("<tr class=\"row\"> <td><a>" + m + "</a></td></tr>")
-                    });
-                    content += "</table>";
-
-                }
-                $("#search-result").html(content);
-            }, "json");
-    }
-
-    /**
-     * 实体查询
-     * @param entity
-     */
-    function entity_search(entity) {
-        $.get("${pageContext.request.contextPath}/search/info.do", {entity: entity},
-            function (entity_info) {
-                var information, infobox, dbpedia_type, baidu_tag;
-                $.each(entity_info, function (key, value) {
-                    // alert(key + ":" + value);
-                    if (key === "DESC") {   //描述信息
-                        if ($("#information").hasClass("hidden")) {
-                            $("#information").removeClass("hidden");
-                        }
-                        information = value;
-
-                    } else if (key === "TYPE") {    // DBpedia Type
-                        if ($("#dbpedia-type").hasClass("hidden")) {
-                            $("#dbpedia-type").removeClass("hidden");
-                        }
-                        if ($.type(value) === "string") {   //如果只有一个Type
-                            dbpedia_type = ("<tr class='row'> " +
-                                "<td style='width: 50%'> " +
-                                "   <a href='https://www.w3.org/1999/02/22-rdf-syntax-ns#type'>rdf:type</a>" +
-                                "</td>" +
-                                "<td style='width: 50%'>" +
-                                "   <a href='http://dbpedia.org/ontology/'" + value + ">http://dbpedia.org/ontology/" + value + "</a>" +
-                                "</td></tr>")
-                        } else {    //有多个Type
-                            $.each(value, function (i, v) {
-                                dbpedia_type += ("<tr class='row'> " +
-                                    "<td style='width: 50%'> " +
-                                    "   <a href='https://www.w3.org/1999/02/22-rdf-syntax-ns#type'>rdf:type</a>" +
-                                    "</td>" +
-                                    "<td style='width: 50%'>" +
-                                    "   <a href='http://dbpedia.org/ontology/'" + v + ">http://dbpedia.org/ontology/" + v + "</a>" +
-                                    "</td></tr>")
-                            });
-                        }
-
-
-                    } else if (key === "TAG") { //Baidu Baike Tag
-                        if ($("#baidu-tag").hasClass("hidden")) {
-                            $("#baidu-tag").removeClass("hidden");
-                        }
-                        if ($.type(value) == "string") {    //只有一个Tag
-                            baidu_tag += ("<tr class='row'>" +
-                                "<td style='width: 50%'> 标签 </td>" +
-                                "<td style='width: 50%'> " + value + "</td> </tr>")
-                        } else {    //有多个Tag
-                            $.each(value, function (i, v) {
-                                baidu_tag += ("<tr class='row'>" +
-                                    "<td style='width: 50%'> 标签 </td>" +
-                                    "<td style='width: 50%'> " + v + "</td> </tr>")
-                            });
-                        }
-                    } else if (key === "CATEGORY_ZH") {
-
-                    } else {
-                        if ($("#infobox").hasClass("hidden")) {
-                            $("#infobox").removeClass("hidden");
-                        }
-                        infobox += ("<tr class='row'>" +
-                            "<td style='width: 50%'>" + key + "</td>" +
-                            "<td style='width: 50%'>" + value + "</td></tr>");
-                    }
-                });
-                $("#information .box-body p").html(information);
-                $("#infobox .box-body table tbody").html(infobox);
-                $("#dbpedia-type .box-body table tbody").html(dbpedia_type);
-                $("#baidu-tag .box-body table tbody").html(baidu_tag);
-                $("#search-result").html("<div id=\"cy\"></div>")
-                draw_kg(entity, entity_info)
-
-            }, "json");
-    }
-
-    $(".box-body").on('click', 'a', function () {
-        if(typeof($(this).attr("href"))=="undefined") {
-            hidden_info();
-            var mention = $(this).text();
-            $("#entity_name").val(mention);
-            ment_search(mention);
-        }
+    $("#entity-list").on('click', 'a', function () {
+        var entity = $(this).text()
+        var mention = '${mention}'
+        $(location).attr('href', '${pageContext.request.contextPath}/view/search?mention=' + mention + '&entity=' + entity);
 
     })
 
+    /**
+     * 其余面板中，a标签的点击跳转
+     */
+    $(".box-body").on('click', 'a', function () {
+        if (typeof($(this).attr("href")) == "undefined") {
+            var mention = $(this).text();
+            $(location).attr('href', '${pageContext.request.contextPath}/view/search?mention=' + mention);
+        }
+    })
+    <%--$(function () {--%>
+        <%--var mention = '${mention}'--%>
+        <%--var entityNames = ${entityNames};--%>
+        <%--var entityInfos = ${entityInfos};--%>
+        <%--displayInfo(mention, entityInfos, entityNames);--%>
+    <%--});--%>
+
+    <%--function displayInfo(mention, entityInfos, entityNames) {--%>
+        <%--if (!$.isEmptyObject(entityInfos)) {--%>
+            <%--//有实体信息，画图，显示实体信息--%>
+            <%--displayPanel(entityInfos);--%>
+            <%--if (entityNames.length > 1) {--%>
+                <%--//显示多义词列表--%>
+                <%--displayEntityNames(mention, entityNames)--%>
+            <%--}--%>
+        <%--} else if (entityNames.length > 1) {--%>
+            <%--//显示多义词列表--%>
+            <%--displayEntityNames(mention, entityNames)--%>
+        <%--} else {--%>
+            <%--//显示查询信息不存在--%>
+            <%--displayNone(mention);--%>
+        <%--}--%>
+    <%--}--%>
+
+    <%--/**--%>
+     <%--* 显示多义词列表--%>
+     <%--*/--%>
+    <%--function displayEntityNames(mention, entityNames) {--%>
+        <%--$("#entity-list").removeClass("hidden");--%>
+        <%--$("#entity-list").append("<h6> \"<b>" + mention + "</b>\"是个多义词，全部含义如下：</h6>");--%>
+        <%--$.each(entityNames, function (index, name) {--%>
+            <%--$("#entity-list").append(" <span class='glyphicon glyphicon-chevron-right'><span><a href='#'>" + name + "</a> ");--%>
+        <%--})--%>
+    <%--}--%>
+
+    <%--/**--%>
+     <%--* 显示实体基本信息框的函数--%>
+     <%--* @param entityInfos   实体信息--%>
+     <%--*/--%>
+    <%--function displayPanel(entityInfos) {--%>
+        <%--var information, infobox, dbpedia_type, baidu_tag;--%>
+        <%--$.each(entityInfos, function (key, value) {--%>
+            <%--if (key === "DESC") {   //描述信息--%>
+                <%--if ($("#information").hasClass("hidden")) {--%>
+                    <%--$("#information").removeClass("hidden");--%>
+                <%--}--%>
+                <%--information = value;--%>
+
+            <%--} else if (key === "TYPE") {    // DBpedia Type--%>
+                <%--if ($("#dbpedia-type").hasClass("hidden")) {--%>
+                    <%--$("#dbpedia-type").removeClass("hidden");--%>
+                <%--}--%>
+                <%--if ($.type(value) === "string") {   //如果只有一个Type--%>
+                    <%--dbpedia_type = ("<tr class='row'> " +--%>
+                        <%--"<td style='width: 50%'> " +--%>
+                        <%--"   <a href='https://www.w3.org/1999/02/22-rdf-syntax-ns#type'>rdf:type</a>" +--%>
+                        <%--"</td>" +--%>
+                        <%--"<td style='width: 50%'>" +--%>
+                        <%--"   <a href='http://dbpedia.org/ontology/'" + value + ">http://dbpedia.org/ontology/" + value + "</a>" +--%>
+                        <%--"</td></tr>")--%>
+                <%--} else {    //有多个Type--%>
+                    <%--$.each(value, function (i, v) {--%>
+                        <%--dbpedia_type += ("<tr class='row'> " +--%>
+                            <%--"<td style='width: 50%'> " +--%>
+                            <%--"   <a href='https://www.w3.org/1999/02/22-rdf-syntax-ns#type'>rdf:type</a>" +--%>
+                            <%--"</td>" +--%>
+                            <%--"<td style='width: 50%'>" +--%>
+                            <%--"   <a href='http://dbpedia.org/ontology/'" + v + ">http://dbpedia.org/ontology/" + v + "</a>" +--%>
+                            <%--"</td></tr>")--%>
+                    <%--});--%>
+                <%--}--%>
 
 
+            <%--} else if (key === "TAG") { //Baidu Baike Tag--%>
+                <%--if ($("#baidu-tag").hasClass("hidden")) {--%>
+                    <%--$("#baidu-tag").removeClass("hidden");--%>
+                <%--}--%>
+                <%--if ($.type(value) == "string") {    //只有一个Tag--%>
+                    <%--baidu_tag += ("<tr class='row'>" +--%>
+                        <%--"<td style='width: 50%'> 标签 </td>" +--%>
+                        <%--"<td style='width: 50%'> " + value + "</td> </tr>")--%>
+                <%--} else {    //有多个Tag--%>
+                    <%--$.each(value, function (i, v) {--%>
+                        <%--baidu_tag += ("<tr class='row'>" +--%>
+                            <%--"<td style='width: 50%'> 标签 </td>" +--%>
+                            <%--"<td style='width: 50%'> " + v + "</td> </tr>")--%>
+                    <%--});--%>
+                <%--}--%>
+            <%--} else if (key === "CATEGORY_ZH") {--%>
+
+            <%--} else {--%>
+                <%--if ($("#infobox").hasClass("hidden")) {--%>
+                    <%--$("#infobox").removeClass("hidden");--%>
+                <%--}--%>
+                <%--infobox += ("<tr class='row'>" +--%>
+                    <%--"<td style='width: 50%'>" + key + "</td>" +--%>
+                    <%--"<td style='width: 50%'>" + value + "</td></tr>");--%>
+            <%--}--%>
+        <%--});--%>
+        <%--$("#information .box-body p").html(information);--%>
+        <%--$("#infobox .box-body table tbody").html(infobox);--%>
+        <%--$("#dbpedia-type .box-body table tbody").html(dbpedia_type);--%>
+        <%--$("#baidu-tag .box-body table tbody").html(baidu_tag);--%>
+    <%--}--%>
+
+    <%--/**--%>
+     <%--* 显示查询实体不存在--%>
+     <%--* @param mention   查询参数--%>
+     <%--*/--%>
+    <%--function displayNone(mention) {--%>
+        <%--$("#search-result").html("<p class='well'>您查询的：<b>" + mention + "</b>不存在，请检查！\</p>");--%>
+    <%--}--%>
+
+    <%--/**--%>
+     <%--* 多义词列表中，a标签的点击跳转--%>
+     <%--*/--%>
+    <%--$("#entity-list").on('click', 'a', function () {--%>
+        <%--var entity = $(this).text()--%>
+        <%--var mention = '${mention}'--%>
+        <%--$(location).attr('href', '${pageContext.request.contextPath}/view/search?mention=' + mention + '&entity=' + entity);--%>
+
+    <%--})--%>
+
+    <%--/**--%>
+     <%--* 其余面板中，a标签的点击跳转--%>
+     <%--*/--%>
+    <%--$(".box-body").on('click', 'a', function () {--%>
+        <%--if (typeof($(this).attr("href")) == "undefined") {--%>
+            <%--var mention = $(this).text();--%>
+            <%--$(location).attr('href', '${pageContext.request.contextPath}/view/search?mention=' + mention);--%>
+        <%--}--%>
+    <%--})--%>
 
 </script>
 </body>
