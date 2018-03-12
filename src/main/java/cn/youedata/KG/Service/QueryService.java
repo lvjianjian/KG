@@ -2,6 +2,7 @@ package cn.youedata.KG.Service;
 
 import cn.youedata.KG.Dao.EntityDaoImpl;
 import cn.youedata.KG.Dao.Ment2EntDaoImpl;
+import cn.youedata.KG.Dao.StatisticsDaoImpl;
 import cn.youedata.KG.Dao.TripleDaoImpl;
 import cn.youedata.KG.Global;
 import org.bson.Document;
@@ -28,6 +29,9 @@ public class QueryService {
 
     @Autowired
     Ment2EntDaoImpl ment2EntDao;
+
+    @Autowired
+    StatisticsDaoImpl statisticsDao;
 
 
 
@@ -84,5 +88,12 @@ public class QueryService {
         }
 
         return map;
+    }
+
+    /**
+     * 通过集合名字获取历史统计记录
+     */
+    public List<Document> getAllStatistics(String colName) {
+        return statisticsDao.find(Global.KG_COLLECTION_STATISTICS_FIELD_NAME_COLNAME, colName);
     }
 }

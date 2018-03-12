@@ -55,6 +55,27 @@ public class Global {
     public static String KG_COLLECTION_TRIPLES_FIELD_NAME_PREDICATE = "p";
 
     /**
+     * statistics数据集合名字
+     */
+    public static String KG_COLLECTION_NAME_STATISTICS = "statistics";
+
+    /**
+     * statistics数据集合进行统计的日期字段名
+     */
+    public static String KG_COLLECTION_STATISTICS_FIELD_NAME_DATA = "data";
+
+    /**
+     * statistics数据集合统计数量字段名
+     */
+    public static String KG_COLLECTION_STATISTICS_FIELD_NAME_COUNT = "count";
+
+    /**
+     * statistics数据集合所要统计集合的名字
+     */
+    public static String KG_COLLECTION_STATISTICS_FIELD_NAME_COLNAME = "colname";
+
+
+    /**
      * mongodb数据库 连接ip
      */
     public static String MONGODB_IP = "192.168.131.192";

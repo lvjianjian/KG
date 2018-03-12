@@ -1,8 +1,10 @@
 package cn.youedata.KG.Controller;
 
+import cn.youedata.KG.Global;
 import cn.youedata.KG.Service.QueryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,8 +22,18 @@ public class ViewController {
     QueryService queryService;
 
     @RequestMapping("/index")
-    public String index() {
-        return "index";
+    public ModelAndView index() {
+        ModelAndView view = new ModelAndView("/index");
+        List<Document> entitiesStatistics = queryService.getAllStatistics(Global.KG_COLLECTION_NAME_ENTITIES);
+        List<Document> triplesStatistics = queryService.getAllStatistics(Global.KG_COLLECTION_NAME_TRIPLES);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            view.addObject("entitiesStatistics", mapper.writeValueAsString(entitiesStatistics));
+            view.addObject("triplesStatistics", mapper.writeValueAsString(triplesStatistics));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return view;
     }
 
     @RequestMapping("/search")
@@ -59,7 +71,6 @@ public class ViewController {
         modelAndView.addObject("entityNames", entityNamesString);
         modelAndView.addObject("entityInfos", entityInfosString);
         modelAndView.addObject("entity",entity);
-        System.out.println("mention:" + entityNames.toString());
         return modelAndView;
     }
 
@@ -86,7 +97,6 @@ public class ViewController {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        System.out.println("mention-entity:" + entityNames.toString());
         return modelAndView;
     }
 

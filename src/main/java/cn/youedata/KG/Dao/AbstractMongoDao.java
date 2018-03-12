@@ -74,5 +74,16 @@ public abstract class AbstractMongoDao {
         return r;
     }
 
+    /**
+     * 向集合中插入文档
+     * @param doc   被插入的文档
+     */
+    public void insert(Document doc) {
+        MongoDatabase db = null;
+        MongoCollection<Document> collection = null;
+        db = mongoDBHelper.getKG_DB(); //获取数据库实例
+        collection = db.getCollection(getCollectionName());
+        collection.insertOne(doc);
+    }
 
 }

@@ -29,9 +29,9 @@
         <!-- Sidebar toggle button-->
         <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
             <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
+            <span class="icon-bar bg-green"></span>
+            <span class="icon-bar bg-green"></span>
+            <span class="icon-bar bg-green"></span>
         </a>
     </nav>
 </header>
@@ -79,6 +79,18 @@
                         </div>
                     </div><!-- /.简介 -->
 
+                    <!-- 基本信息 -->
+                    <div class="nav-tabs-custom ">
+                        <ul class="nav nav-tabs pull-right">
+                            <li class="pull-left header">基本信息</li>
+                        </ul>
+                        <div class="tab-content no-padding">
+                            <div id="info-graph" class="tab-pane active panel panel-default" style="height: 400px;">
+
+                            </div>
+                        </div>
+                    </div><!-- /.基本信息 -->
+
                     <!-- 更新记录 -->
                     <div class="nav-tabs-custom">
                         <ul class="nav nav-tabs pull-right">
@@ -121,6 +133,105 @@
         crossorigin="anonymous"></script>
 <!-- app.js -->
 <script src="${pageContext.request.contextPath}/js/app.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/js/echarts.min.js"></script>
+
+<script>
+    $(function () {
+        var entitiesStatistics =
+        ${entitiesStatistics}
+        var triplesStatistics = ${triplesStatistics}
+            console.log(entitiesStatistics)
+        console.log(triplesStatistics)
+
+        var infoGraph = echarts.init(document.getElementById('info-graph'));
+        // 指定图表的配置项和数据
+        var option = {
+            legend: {},
+            tooltip: {
+                trigger: "axis"
+            },
+            xAxis: [
+                {
+                    gridIndex: 1,
+                    data: entitiesStatistics.map(function (item) {
+                        return item['data']
+                    })
+                },
+                {
+                    gridIndex: 0,
+                    data: triplesStatistics.map(function (item) {
+                        return item['data']
+                    })
+                }
+            ],
+            yAxis: [
+                {
+                    min: 10000000,
+                    splitLine: {
+                        show: false
+                    },
+                    gridIndex: 1
+                },
+                {
+                    min: 120000000,
+                    splitLine: {
+                        show: false
+                    },
+                    gridIndex: 0
+                }
+            ],
+            dataZoom: [
+                {
+                    id: 'dataZoomEntity',
+                    type: 'slider',
+                    startValue: entitiesStatistics[Math.max(0, entitiesStatistics.length - 30)]['data'],
+                    xAxisIndex: 0
+                },
+                {
+                    id: 'dataZoomTriple',
+                    type: 'slider',
+                    startValue: triplesStatistics[Math.max(0, triplesStatistics.length - 30)]['data'],
+                    xAxisIndex: 1
+                }
+            ],
+
+
+            grid: [
+                {left: '55%'},
+                {right: '55%'}
+            ],
+            // Declare several bar series, each will be mapped
+            // to a column of dataset.source by default.
+            series: [
+                {
+                    name: '实体数',
+                    type: 'line',
+                    data: entitiesStatistics.map(function (item) {
+                        return item['count']
+                    }),
+                    xAxisIndex: 0,
+                    yAxisIndex: 0
+                },
+                {
+                    name: '三元组数',
+                    type: 'line',
+                    data: triplesStatistics.map(function (item) {
+                        return item['count']
+                    }),
+                    xAxisIndex: 1,
+                    yAxisIndex: 1
+                }
+            ]
+        };
+
+        window.onresize = infoGraph.resize;
+        $("#info-graph").resize(infoGraph.resize);
+
+        // 使用刚指定的配置项和数据显示图表。
+        infoGraph.setOption(option);
+    })
+</script>
+
 </body>
 
 </html>     

@@ -37,9 +37,9 @@
         <!-- Sidebar toggle button-->
         <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
             <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
+            <span class="icon-bar bg-green"></span>
+            <span class="icon-bar bg-green"></span>
+            <span class="icon-bar bg-green"></span>
         </a>
     </nav>
 </header>
@@ -89,7 +89,7 @@
                         <div id="search-result" class="box-body">
                             <p id="entity-list" class="well hidden">
                             </p>
-                            <div id="entity-graph" class="panel panel-default hidden" style="width:100%;height: 600px;">
+                            <div id="entity-graph" class="panel panel-default" style="width:100%;height: 600px;">
                             </div>
                         </div><!-- /.box-body -->
                     </div>
@@ -198,6 +198,16 @@
      * 多义词列表中，a标签的点击跳转
      */
     $("#entity-list").on('click', 'a', function () {
+        var entity = $(this).text()
+        var mention = '${mention}'
+        $(location).attr('href', '${pageContext.request.contextPath}/view/search?mention=' + mention + '&entity=' + entity);
+
+    })
+
+    /**
+     * 多义词列表中，a标签的点击跳转
+     */
+    $(".box-body").on('hover', 'a', function () {
         var entity = $(this).text()
         var mention = '${mention}'
         $(location).attr('href', '${pageContext.request.contextPath}/view/search?mention=' + mention + '&entity=' + entity);
