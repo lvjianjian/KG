@@ -59,6 +59,7 @@ public class ViewController {
         modelAndView.addObject("entityNames", entityNamesString);
         modelAndView.addObject("entityInfos", entityInfosString);
         modelAndView.addObject("entity",entity);
+        System.out.println("mention:" + entityNames.toString());
         return modelAndView;
     }
 
@@ -72,7 +73,10 @@ public class ViewController {
         List<String> entityNames = queryService.getEntityNamesByMention(mention);
         Map<String, Object> entityInfos = queryService.getAllInfosByEntity(entity);
         try {
-            entityNames.add(mention);
+            Map<String, Object> mentionInfos = queryService.getAllInfosByEntity(mention);
+            if (mentionInfos != null && mentionInfos.size() != 0) {
+                entityNames.add(mention);
+            }
             String entityNamesString = mapper.writeValueAsString(entityNames);
             String entityInfosString = mapper.writeValueAsString(entityInfos);
             modelAndView.addObject("entityNames", entityNamesString);
@@ -82,6 +86,7 @@ public class ViewController {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+        System.out.println("mention-entity:" + entityNames.toString());
         return modelAndView;
     }
 
