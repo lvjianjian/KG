@@ -82,4 +82,6 @@ function draw_kg(entity, data) {
 
     });
     layout.run();
+
+
 }

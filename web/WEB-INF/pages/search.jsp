@@ -89,7 +89,7 @@
                         <div id="search-result" class="box-body">
                             <p id="entity-list" class="well hidden">
                             </p>
-                            <div id="entity-graph" class="panel panel-default" style="width:100%;height: 600px;">
+                            <div id="entity-graph" class="panel panel-default" style="width:100%;height: 500px;">
                             </div>
                         </div><!-- /.box-body -->
                     </div>
@@ -180,7 +180,7 @@
 
 <script src="${pageContext.request.contextPath}/js/app.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/js/search.js" ></script>
-<script src="${pageContext.request.contextPath}/js/echarts.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/echarts.js"></script>
 <script src="${pageContext.request.contextPath}/js/youe_echarts.js"></script>
 <script>
 
@@ -190,8 +190,10 @@
         var entityInfos = ${entityInfos};
         var entity = '${entity}'
         var myChart = echarts.init(document.getElementById('entity-graph'));
-        displayInfo(mention, entity,entityInfos, entityNames,myChart);
-
+        displayInfo(mention, entity, entityInfos, entityNames,myChart);
+        window.onresize = function(){
+            myChart.resize();
+        };
     });
 
     /**
