@@ -61,6 +61,58 @@
 
         <!-- Main content -->
         <section class="content">
+            1.获取同义词列表 (mention -> entity) <br>
+            输入名称(mention)返回对应实体(entity)的列表。<br>
+
+            请求方式(名称：mention_name):<br>
+
+            http://ada.suda.edu.cn/KG/search/query.do?mention=mention_name<br>
+
+            返回格式:<br>
+            [entity_name1, entity_name2]<br>
+            附加说明: 如果没有同义词, 返回空的列表, 即[]. <br>
+
+            mention_name举例:<br>
+
+            苹果<br>
+            苏大<br>
+            苏州大学<br>
+            番茄<br>
+            西红柿<br>
+
+
+
+            2.获取实体 (entity -> knowledge) <br>
+            输入实体(entity)返回JSON格式的全部知识。 <br>
+            请求方式(实体：entity_name):<br>
+            http://ada.suda.edu.cn/KG/search/info.do?entity=entity_name <br>
+            返回格式:<br>
+            {<br>
+                predicate1: object1,<br>
+                predicate2: object2,<br>
+                predicate3: [object3_1, object3_2]<br>
+            }<br>
+            附加说明: 若谓语只对应一个宾语，则返回谓语和对应宾语；若谓语对应多个并于，则返回谓语和对应的宾语列表 。 如果没有对应实体, 返回空的字典, 即{}. <br>
+
+            entity_name举例:<br>
+
+            苏州大学<br>
+            复旦大学<br>
+            苹果（蔷薇科苹果属果树）<br>
+            苹果公司<br>
+
+            3. 获取属性值(entity&attribute -> value)<br>
+            给定实体(entity)和属性(attribute)返回其对应属性值(value)。<br>
+
+
+            请求方式（实体：entity_name、属性：attribute_name）:<br>
+            http://ada.suda.edu.cn/KG/search/attr.do?entity=entity_name&attribute=attribute_name <br>
+
+            返回格式：<br>
+            [value1,value2] <br>
+            附加说明: 如果没有对应实体或者没有对应的属性名(谓语名), 返回空的列表, 即[]. <br>
+
+
 
         </section><!-- /.Main content -->
     </aside><!-- /.right-side -->
