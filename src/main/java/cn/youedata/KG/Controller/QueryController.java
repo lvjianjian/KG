@@ -39,10 +39,10 @@ public class QueryController {
         ModelAndView modelAndView = new ModelAndView("test3");
         Map<String, Object> allInfosByEntity = queryService.getAllInfosByEntity(entity);
         ObjectMapper mapper = new ObjectMapper();
-        modelAndView.addObject("entity",entity);
+        modelAndView.addObject("entity", entity);
         try {
             String json = mapper.writeValueAsString(allInfosByEntity);
-            modelAndView.addObject("triples",json);
+            modelAndView.addObject("triples", json);
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -67,13 +67,27 @@ public class QueryController {
 
     /**
      * 通过实体名字获取所有与实体有关的关系
+     *
      * @param entity
      * @return map 谓语对应的宾语只有一个，则value为string，否则为一个list,
      */
     @RequestMapping(value = "/info.do")
     @ResponseBody
-    public Map<String,Object> entityInfo(String entity) {
+    public Map<String, Object> entityInfo(String entity) {
         return queryService.getAllInfosByEntity(entity);
     }
 
+    /**
+     * 通过实体名字和属性名字获取返回值
+     *
+     * @param entity
+     * @param attribute
+     * @return list
+     */
+    @RequestMapping(value = "/attr.do")
+    @ResponseBody
+    public List<String> attrOfEntity(String entity, String attribute) {
+        System.out.println(entity);
+        return queryService.getOneInfoByEntityAndAttribute(entity, attribute);
+    }
 }

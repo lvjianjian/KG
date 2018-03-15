@@ -90,6 +90,28 @@ public class QueryService {
         return map;
     }
 
+
+    /**
+     * 通过实体名字和属性获取返回值
+     * @param entity
+     * @param attribute
+     * @return 返回一个list
+     */
+    public List<String> getOneInfoByEntityAndAttribute(String entity,String attribute) {
+        Map<String, Object> allInfosByEntity = getAllInfosByEntity(entity);
+        List<String> return_values = null;
+        if(allInfosByEntity.containsKey(attribute)){
+            Object o = allInfosByEntity.get(attribute);
+            if(o instanceof String){
+                return_values = new ArrayList<>();
+                return_values.add((String)o);
+            }else{
+                return_values = (List)o;
+            }
+        }else return_values = new ArrayList<>();
+        return return_values;
+    }
+
     /**
      * 通过集合名字获取历史统计记录
      */
