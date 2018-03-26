@@ -455,9 +455,9 @@ function getRootPath_web() {
 }
 
 function selfHeight(size) {
-    if (size < 15) return "350px"
-    else if (size < 30) return "500px"
-    else return "700px"
+    height = Math.max((100 + Math.sqrt(size) * 88), 350)
+    console.log(height)
+    return height + "px"
 }
 
 //画kg图
