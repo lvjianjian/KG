@@ -3,12 +3,14 @@
  * @param mention   查询参数
  * @param entityInfos   实体内容
  * @param entityNames   多义词列表
+ * @param myChart   echart实例
+ * @param graph_dom     graph对应的dom实例
  */
-function displayInfo(mention,entity, entityInfos, entityNames, myChart) {
+function displayInfo(mention,entity, entityInfos, entityNames, myChart, graph_dom) {
     if (!$.isEmptyObject(entityInfos)) {
         //有实体信息，画图，显示实体信息
         displayPanel(entityInfos);
-        draw_kg(entity,entityInfos,myChart,kg_option_1)
+        draw_kg(entity,entityInfos,myChart,kg_option_1,graph_dom)
         if (entityNames.length > 1) {
             //显示多义词列表
             displayEntityNames(mention, entityNames)

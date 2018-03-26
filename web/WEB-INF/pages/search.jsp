@@ -179,7 +179,7 @@
 <!-- app.js -->
 
 <script src="${pageContext.request.contextPath}/js/app.js" type="text/javascript"></script>
-<script src="${pageContext.request.contextPath}/js/search.js" ></script>
+<script src="${pageContext.request.contextPath}/js/search.js"></script>
 <script src="${pageContext.request.contextPath}/js/echarts.js"></script>
 <script src="${pageContext.request.contextPath}/js/youe_echarts.js"></script>
 <script>
@@ -190,8 +190,9 @@
         var entityInfos = ${entityInfos};
         var entity = '${entity}'
         var myChart = echarts.init(document.getElementById('entity-graph'));
-        displayInfo(mention, entity, entityInfos, entityNames,myChart);
-        window.onresize = function(){
+        displayInfo(mention, entity, entityInfos, entityNames, myChart,
+            document.getElementById('entity-graph'));
+        window.onresize = function () {
             myChart.resize();
         };
     });
