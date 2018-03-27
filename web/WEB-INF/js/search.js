@@ -9,6 +9,7 @@
 function displayInfo(mention,entity, entityInfos, entityNames, myChart, graph_dom) {
     if (!$.isEmptyObject(entityInfos)) {
         //有实体信息，画图，显示实体信息
+        $("#entity-graph").css("height", "500px")
         displayPanel(entityInfos);
         draw_kg(entity,entityInfos,myChart,kg_option_1,graph_dom)
         if (entityNames.length > 1) {

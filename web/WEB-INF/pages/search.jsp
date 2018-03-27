@@ -89,7 +89,7 @@
                         <div id="search-result" class="box-body">
                             <p id="entity-list" class="well hidden">
                             </p>
-                            <div id="entity-graph" class="panel panel-default" style="width:100%;height: 500px;">
+                            <div id="entity-graph" class="panel panel-default" style="width:100%;">
                             </div>
                         </div><!-- /.box-body -->
                     </div>
