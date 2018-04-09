@@ -3,21 +3,42 @@ package cn.youedata.KG;
 /**
  * Created by zhongjianlv on 2018/3/5
  */
-public class Global {
+public final class Global {
     /**
      * 数据库名字
      */
     public static String KG_DB_NAME = "ada_dbpedia";
 
     /**
+     * 百度百科Collection的base名
+     */
+    public static String KG_BAIDUBAIKE = "bdbaike";
+
+    /**
+     * 维基百科的Collection的base名
+     */
+    public static String KG_ZHWIKI = "zhwiki";
+
+    /**
+     * 所有知识库的base名
+     */
+    public static String[] KG_BASES = {KG_BAIDUBAIKE, KG_ZHWIKI};
+
+    /**
      * 数据集合id字段名
      */
     public static String KG_COLLECTION_FIELD_NAME_ID = "_id";
 
+
+    /**
+     * 数据集合label字段名
+     */
+    public static String KG_COLLECTION_FIELD_NAME_LABEL = "label";
+
     /**
      * ment2ent数据集合名字
      */
-    public static String KG_COLLECTION_NAME_MENT2ENT = "ment2ent";
+    public static String KG_COLLECTION_NAME_MENT2ENT = "Ment2ent";
 
     /**
      * ment2ent数据集合mention字段名
@@ -32,12 +53,12 @@ public class Global {
     /**
      * entities数据集合名字
      */
-    public static String KG_COLLECTION_NAME_ENTITIES = "entities";
+    public static String KG_COLLECTION_NAME_ENTITIES = "Entities";
 
     /**
      * triples数据集合名字
      */
-    public static String KG_COLLECTION_NAME_TRIPLES = "triples";
+    public static String KG_COLLECTION_NAME_TRIPLES = "Triples";
 
     /**
      * triples数据集合主语subject字段名

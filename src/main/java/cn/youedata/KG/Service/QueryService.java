@@ -5,14 +5,12 @@ import cn.youedata.KG.Dao.Ment2EntDaoImpl;
 import cn.youedata.KG.Dao.StatisticsDaoImpl;
 import cn.youedata.KG.Dao.TripleDaoImpl;
 import cn.youedata.KG.Global;
+import org.apache.log4j.Logger;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by zhongjianlv on 2018/3/9
@@ -33,38 +31,89 @@ public class QueryService {
     @Autowired
     StatisticsDaoImpl statisticsDao;
 
+    private static Logger logger = Logger.getLogger(QueryService.class);
+
+    /**
+     * 通过id获取对应知识库的label
+     *
+     * @param id
+     * @param kg_base
+     * @return
+     */
+    public String getLabelByIdInEntity(String id, String kg_base) {
+        //bdbaike的数据直接返回id为label
+        if (kg_base.equals(Global.KG_BAIDUBAIKE)) return id;
+        List<Document> documents = entityDao.find(id, kg_base);
+        if (documents != null && documents.size() >= 1) {
+            return documents.get(0).getString(Global.KG_COLLECTION_FIELD_NAME_LABEL);
+        }
+        return null;
+    }
+
+    /**
+     * 通过mention获取所有实体id, 指定知识库
+     *
+     * @param mention
+     * @param kg_base
+     * @return List<String></>
+     */
+    public List<String> getEntityIdsByMention(String mention, String kg_base) {
+        List<String> l = new ArrayList<>();
+        if (mention == null || mention.equals("")) return l;
+        List<Document> documents = ment2EntDao.find(Global.KG_COLLECTION_MENT2ENT_FIELD_NAME_MENTION,
+                mention,
+                kg_base);
+        if (documents != null)
+            for (Document doc : documents) {
+                l.add(doc.getString(Global.KG_COLLECTION_MENT2ENT_FIELD_NAME_ENTITY));
+            }
+
+        logger.info(String.format("query %s in %s: size = %d", mention, kg_base, l.size()));
+        return l;
+    }
+
+    /**
+     * 获取所有知识库的mention对应的entity id, 查找所有知识库
+     *
+     * @param mention
+     * @return
+     */
+    public Map<String, List<String>> getEntityIdsByMention(String mention) {
+        HashMap<String, List<String>> res = new HashMap<>();
+        for (String kg_base : Global.KG_BASES) {
+            res.put(kg_base, getEntityIdsByMention(mention, kg_base));
+        }
+        return res;
+    }
 
 
     /**
-     * 通过mention获取所有实体名字
+     * 通过实体名字获取所有与实体有关的关系，查找所有知识库
      *
-     * @param mention
-     * @return List<String></>
+     * @param entity
+     * @return map key为知识库基名，value为对应知识库的该实体的所有三元组
      */
-    public List<String> getEntityNamesByMention(String mention) {
-        List<String> l = new ArrayList<>();
-        if(mention == null || mention.equals("")) return l;
-        if (mention != null) {
-            List<Document> documents = ment2EntDao.find(Global.KG_COLLECTION_MENT2ENT_FIELD_NAME_MENTION, mention);
-            if (documents != null)
-                for (Document doc : documents) {
-                    l.add(doc.getString(Global.KG_COLLECTION_MENT2ENT_FIELD_NAME_ENTITY));
-                }
-
+    public Map<String, Map<String, Object>> getAllInfosByEntity(String entity) {
+        Map<String, Map<String, Object>> res = new HashMap<>();
+        for (String kg_base : Global.KG_BASES) {
+            res.put(entity, getAllInfosByEntity(entity, kg_base));
         }
-        return l;
+        return res;
     }
 
 
     /**
      * 通过实体名字获取所有与实体有关的关系
+     *
      * @param entity
+     * @param kg_base 指定的知识库名字
      * @return map 谓语对应的宾语只有一个，则value为string，否则为一个list,
      */
-    public Map<String, Object> getAllInfosByEntity(String entity) {
+    public Map<String, Object> getAllInfosByEntity(String entity, String kg_base) {
         Map<String, Object> map = new HashMap<>();
-        if(entity == null || entity.equals("")) return map;
-        List<Document> relationsByEntity = tripleDao.find(Global.KG_COLLECTION_TRIPLES_FIELD_NAME_SUBJECT, entity);
+        if (entity == null || entity.equals("")) return map;
+        List<Document> relationsByEntity = tripleDao.find(Global.KG_COLLECTION_TRIPLES_FIELD_NAME_SUBJECT,
+                entity, kg_base);
         if (relationsByEntity == null || relationsByEntity.size() == 0) return map;
 
 
@@ -90,25 +139,41 @@ public class QueryService {
         return map;
     }
 
+    /**
+     * 通过实体名字和属性获取返回值，查找所有知识库
+     *
+     * @param entity
+     * @param attribute
+     * @return 返回一个Map
+     */
+    public Map<String, List<String>> getOneInfoByEntityAndAttribute(String entity, String attribute) {
+        Map<String, List<String>> res = new HashMap<>();
+        for (String kg_base : Global.KG_BASES) {
+            res.put(kg_base, getOneInfoByEntityAndAttribute(entity, attribute, kg_base));
+        }
+        return res;
+    }
 
     /**
      * 通过实体名字和属性获取返回值
+     *
      * @param entity
      * @param attribute
+     * @param kg_base   指定知识库名字
      * @return 返回一个list
      */
-    public List<String> getOneInfoByEntityAndAttribute(String entity,String attribute) {
-        Map<String, Object> allInfosByEntity = getAllInfosByEntity(entity);
+    public List<String> getOneInfoByEntityAndAttribute(String entity, String attribute, String kg_base) {
+        Map<String, Object> allInfosByEntity = getAllInfosByEntity(entity, kg_base);
         List<String> return_values = null;
-        if(allInfosByEntity.containsKey(attribute)){
+        if (allInfosByEntity.containsKey(attribute)) {
             Object o = allInfosByEntity.get(attribute);
-            if(o instanceof String){
+            if (o instanceof String) {
                 return_values = new ArrayList<>();
-                return_values.add((String)o);
-            }else{
-                return_values = (List)o;
+                return_values.add((String) o);
+            } else {
+                return_values = (List) o;
             }
-        }else return_values = new ArrayList<>();
+        } else return_values = new ArrayList<>();
         return return_values;
     }
 
@@ -116,6 +181,6 @@ public class QueryService {
      * 通过集合名字获取历史统计记录
      */
     public List<Document> getAllStatistics(String colName) {
-        return statisticsDao.find(Global.KG_COLLECTION_STATISTICS_FIELD_NAME_COLNAME, colName);
+        return statisticsDao.find(Global.KG_COLLECTION_STATISTICS_FIELD_NAME_COLNAME, colName, "");
     }
 }

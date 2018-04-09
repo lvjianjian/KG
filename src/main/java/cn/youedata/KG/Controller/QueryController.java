@@ -7,6 +7,7 @@ import cn.youedata.KG.Global;
 import cn.youedata.KG.Service.QueryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.log4j.Logger;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,14 +31,17 @@ import static com.mongodb.client.model.Filters.eq;
 @RequestMapping("/search")
 public class QueryController {
 
+    private static Logger logger = Logger.getLogger(QueryController.class);
+
     @Autowired
     QueryService queryService;
 
 
     @RequestMapping("/test3.do")
     public ModelAndView test1(String entity) {
+        logger.info("test3");
         ModelAndView modelAndView = new ModelAndView("test3");
-        Map<String, Object> allInfosByEntity = queryService.getAllInfosByEntity(entity);
+        Map<String, Object> allInfosByEntity = queryService.getAllInfosByEntity(entity, Global.KG_BAIDUBAIKE);
         ObjectMapper mapper = new ObjectMapper();
         modelAndView.addObject("entity", entity);
         try {
@@ -61,7 +65,7 @@ public class QueryController {
     @RequestMapping(value = "/query.do")
     @ResponseBody
     public List<String> mentionToEntityNames(String mention) {
-        return queryService.getEntityNamesByMention(mention);
+        return queryService.getEntityIdsByMention(mention, Global.KG_BAIDUBAIKE);
     }
 
 
@@ -74,7 +78,7 @@ public class QueryController {
     @RequestMapping(value = "/info.do")
     @ResponseBody
     public Map<String, Object> entityInfo(String entity) {
-        return queryService.getAllInfosByEntity(entity);
+        return queryService.getAllInfosByEntity(entity, Global.KG_BAIDUBAIKE);
     }
 
     /**
@@ -88,6 +92,6 @@ public class QueryController {
     @ResponseBody
     public List<String> attrOfEntity(String entity, String attribute) {
         System.out.println(entity);
-        return queryService.getOneInfoByEntityAndAttribute(entity, attribute);
+        return queryService.getOneInfoByEntityAndAttribute(entity, attribute, Global.KG_BAIDUBAIKE);
     }
 }
