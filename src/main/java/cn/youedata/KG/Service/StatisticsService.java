@@ -15,6 +15,10 @@ public class StatisticsService {
     @Autowired
     StatisticsDaoImpl statisticsDao;
 
+    /**
+     * 统计数据集中的文档个数
+     * @param colName   要统计的数据集
+     */
     public void statisticsOfTheCol(String colName) {
         for (String kgBase : Global.KG_BASES) {
             long count = statisticsDao.count(colName, kgBase);
