@@ -1,9 +1,6 @@
 package cn.youedata.KG.Service;
 
-import cn.youedata.KG.Dao.EntityDaoImpl;
-import cn.youedata.KG.Dao.Ment2EntDaoImpl;
-import cn.youedata.KG.Dao.StatisticsDaoImpl;
-import cn.youedata.KG.Dao.TripleDaoImpl;
+import cn.youedata.KG.Dao.*;
 import cn.youedata.KG.Global;
 import org.apache.log4j.Logger;
 import org.bson.Document;
@@ -31,6 +28,9 @@ public class QueryService {
 
     @Autowired
     StatisticsDaoImpl statisticsDao;
+
+    @Autowired
+    SameAsDaoImpl sameAsDao;
 
     private static Logger logger = Logger.getLogger(QueryService.class);
 
@@ -97,7 +97,7 @@ public class QueryService {
     public Map<String, Map<String, Object>> getAllInfosByEntity(String entity) {
         Map<String, Map<String, Object>> res = new HashMap<>();
         for (String kg_base : Global.KG_BASES) {
-            res.put(entity, getAllInfosByEntity(entity, kg_base));
+            res.put(kg_base, getAllInfosByEntity(entity, kg_base));
         }
         return res;
     }
@@ -176,6 +176,42 @@ public class QueryService {
             }
         } else return_values = new ArrayList<>();
         return return_values;
+    }
+
+
+    /**
+     * 获取主知识库关于实体的实体链接
+     *
+     * @param entity_name 实体名字
+     * @return map key为知识库名字,value为对应知识库的链接实体名
+     */
+    public Map<String, List<String>> getSameAsAboutMainKGBase(String entity_name) {
+        return getSameAsAboutOneKGBase(Global.KG_MAIN_BASE, entity_name);
+    }
+
+
+    /**
+     * 获取主知识库关于实体的实体链接
+     *
+     * @param main_kg_base 主知识库名字
+     * @param entity_name  实体名字
+     * @return map key为知识库名字,value为对应知识库的链接实体名
+     */
+    public Map<String, List<String>> getSameAsAboutOneKGBase(String main_kg_base, String entity_name) {
+        sameAsDao.setMainKGName(main_kg_base);
+        Map<String, List<String>> res = new HashMap<>();
+        for (String kgBase : Global.KG_BASES) {
+            if (kgBase.equals(main_kg_base))
+                continue;
+            List<Document> documents = sameAsDao.find(Global.KG_COLLECTION_TRIPLES_FIELD_NAME_SUBJECT, entity_name);
+            List<String> r = new ArrayList<>();
+            if (documents != null)
+                for (Document document : documents) {
+                    r.add(document.getString(Global.KG_COLLECTION_TRIPLES_FIELD_NAME_OBJECT));
+                }
+            res.put(kgBase, r);
+        }
+        return res;
     }
 
     /**

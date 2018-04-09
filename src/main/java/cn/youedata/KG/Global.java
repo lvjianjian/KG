@@ -9,10 +9,16 @@ public final class Global {
      */
     public static String KG_DB_NAME = "ada_dbpedia";
 
+
     /**
      * 百度百科Collection的base名
      */
     public static String KG_BAIDUBAIKE = "bdbaike";
+
+    /**
+     * 主知识库名字
+     */
+    public static String KG_MAIN_BASE = KG_BAIDUBAIKE;
 
     /**
      * 维基百科的Collection的base名
