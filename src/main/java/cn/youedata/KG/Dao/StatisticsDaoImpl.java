@@ -19,17 +19,17 @@ public class StatisticsDaoImpl extends AbstractMongoDao {
      * @param colName 要统计的集合
      * @return  文档数量
      */
-    public long count(String colName) {
+    public long count(String colName, String kg_base) {
         long count = 0;
         if (colName == null || colName.length() == 0 || "".equals(colName)) return count;
         MongoDatabase db = mongoDBHelper.getKG_DB(); //获取数据库实例
-        MongoCollection<Document> statisticsColl = db.getCollection(colName);   //获取被统计的集合
+        MongoCollection<Document> statisticsColl = db.getCollection(kg_base + colName);   //获取被统计的集合
         count = statisticsColl.count();
         return count;
     }
 
     public static void main(String[] args) {
         StatisticsDaoImpl dao = new StatisticsDaoImpl();
-        System.out.println(dao.count("entities"));
+        System.out.println(dao.count("Triples", Global.KG_ZHWIKI));
     }
 }

@@ -78,7 +78,7 @@ public final class Global {
     /**
      * statistics数据集合名字
      */
-    public static String KG_COLLECTION_NAME_STATISTICS = "statistics";
+    public static String KG_COLLECTION_NAME_STATISTICS = "Statistics";
 
     /**
      * statistics数据集合进行统计的日期字段名

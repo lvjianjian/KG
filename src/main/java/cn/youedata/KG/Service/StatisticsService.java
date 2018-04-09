@@ -16,10 +16,12 @@ public class StatisticsService {
     StatisticsDaoImpl statisticsDao;
 
     public void statisticsOfTheCol(String colName) {
-        long count = statisticsDao.count(colName);
-        Document doc = new Document().append("data", LocalDate.now().toString())
-                .append("colname", colName)
-                .append("count", count);
-        statisticsDao.insert(doc, Global.KG_BAIDUBAIKE);
+        for (String kgBase : Global.KG_BASES) {
+            long count = statisticsDao.count(colName, kgBase);
+            Document doc = new Document().append(Global.KG_COLLECTION_STATISTICS_FIELD_NAME_DATA, LocalDate.now().toString())
+                    .append(Global.KG_COLLECTION_STATISTICS_FIELD_NAME_COLNAME, colName)
+                    .append(Global.KG_COLLECTION_STATISTICS_FIELD_NAME_COUNT, count);
+            statisticsDao.insert(doc, kgBase);
+        }
     }
 }

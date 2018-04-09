@@ -4,6 +4,7 @@ import cn.youedata.KG.Global;
 import cn.youedata.KG.Service.QueryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.log4j.Logger;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import java.util.Map;
 public class ViewController {
     @Autowired
     QueryService queryService;
+    private static Logger logger = Logger.getLogger(ViewController.class);
 
     @RequestMapping("/index")
     public ModelAndView index() {

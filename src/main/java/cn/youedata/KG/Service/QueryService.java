@@ -10,6 +10,7 @@ import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -180,7 +181,24 @@ public class QueryService {
     /**
      * 通过集合名字获取历史统计记录
      */
-    public List<Document> getAllStatistics(String colName) {
-        return statisticsDao.find(Global.KG_COLLECTION_STATISTICS_FIELD_NAME_COLNAME, colName, "");
+    private List<Document> getAllStatistics(String colName, String kg_base) {
+        List<Document> documents = statisticsDao.find(Global.KG_COLLECTION_STATISTICS_FIELD_NAME_COLNAME, colName, kg_base);
+        return documents;
     }
+
+    public List<Document> getAllStatistics(String cloName) {
+        List<Document> zhWiki = getAllStatistics(cloName, Global.KG_ZHWIKI);
+        List<Document> bdBaike = getAllStatistics(cloName, Global.KG_BAIDUBAIKE);
+        List<Document> documents = new ArrayList<>();
+        for (int i = 0; i < zhWiki.size(); i++) {
+            Document doc = new Document();
+            doc.putAll(bdBaike.get(i));
+            Long count = Long.sum(zhWiki.get(i).getLong(Global.KG_COLLECTION_STATISTICS_FIELD_NAME_COUNT),
+                    bdBaike.get(i).getLong(Global.KG_COLLECTION_STATISTICS_FIELD_NAME_COUNT));
+            doc.put(Global.KG_COLLECTION_STATISTICS_FIELD_NAME_COUNT, count);
+            documents.add(doc);
+        }
+        return documents;
+    }
+
 }
