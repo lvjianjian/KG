@@ -73,6 +73,7 @@
             <div class="row">
                 <section class="col-lg-12 ">
                     <div class="box box-solid box-danger">
+
                         <div class="box-header">
                             <%--<h3 class="box-title">实体搜索</h3>--%>
                             <div class="box-tools pull-right">
@@ -80,88 +81,145 @@
                                       method="get">
                                     <input name="mention" type="text" class="form-control" placeholder="Search for...">
                                     <span class="input-group-btn">
-                                        <input class="btn btn-default bg-gray" type="submit" value="Search"></input>
+                                        <input class="btn btn-default bg-gray" type="submit" value="Search"/>
                                     </span>
                                 </form>
                             </div>
                         </div>
 
-                        <div id="search-result" class="box-body">
-                            <p id="entity-list" class="well hidden">
-                            </p>
-                            <div id="entity-graph" class="panel panel-default" style="width:100%;">
+                        <!-- 实体列表 -->
+                        <p id="entity-list" class="well hidden"></p>
+
+                        <div>
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#bdbaike" aria-controls="bdbaike"
+                                                                          role="tab" data-toggle="tab">百度百科</a></li>
+                                <li role="presentation"><a href="#zhwiki" aria-controls="zhwiki" role="tab"
+                                                           data-toggle="tab">维基百科</a></li>
+                            </ul>
+
+                            <!-- Tab panes -->
+                            <div class="tab-content">
+                                <!-- 百度百科结果 -->
+                                <div role="tabpanel" class="tab-pane active" id="bdbaike">
+                                    <div id="search-result" class="box-body">
+                                        <div id="entity-graph" class="panel panel-default" style="width:100%;">
+                                        </div>
+                                        <!-- Information -->
+                                        <div id="information" class="box box-solid box-primary hidden">
+                                            <div class="box-header">
+                                                <h3 class="box-title">Information</h3>
+                                                <div class="box-tools pull-right">
+                                                    <button class="btn btn-primary btn-sm" data-widget="collapse"><span
+                                                            class="glyphicon glyphicon-minus"></span></button>
+                                                </div>
+                                            </div>
+                                            <div class="box-body">
+                                                <p class="well">
+                                                </p>
+                                            </div><!-- /.box-body -->
+                                        </div><!-- /.box  Information -->
+                                        <!-- Info box -->
+                                        <div id="infobox" class="box box-solid box-info hidden">
+                                            <div class="box-header">
+                                                <h3 class="box-title">InfoBox</h3>
+                                                <div class="box-tools pull-right">
+                                                    <button class="btn btn-info btn-sm" data-widget="collapse"><span
+                                                            class="glyphicon glyphicon-minus"></span></button>
+                                                </div>
+                                            </div>
+                                            <div class="box-body">
+                                                <table class="table table-striped text-center">
+                                                    <tbody>
+
+                                                    </tbody>
+                                                </table>
+                                            </div><!-- /.box-body -->
+                                        </div><!-- /.infobox -->
+                                        <!-- DBpedia Type -->
+                                        <div id="dbpedia-type" class="box box-solid box-success hidden">
+                                            <div class="box-header">
+                                                <h3 class="box-title">DBpedia Type</h3>
+                                                <div class="box-tools pull-right">
+                                                    <button class="btn btn-success btn-sm" data-widget="collapse"><span
+                                                            class="glyphicon glyphicon-minus"></span></button>
+                                                </div>
+                                            </div>
+                                            <div class="box-body">
+                                                <table class="table table-striped text-center">
+                                                    <tbody>
+
+                                                    </tbody>
+                                                </table>
+                                            </div><!-- /.box-body -->
+                                        </div><!-- /.DBpedia Type -->
+                                        <!-- Baidu Baike Tag -->
+                                        <div id="baidu-tag" class="box box-solid box-warning hidden">
+                                            <div class="box-header">
+                                                <h3 class="box-title">Baidu Baike Tag</h3>
+                                                <div class="box-tools pull-right">
+                                                    <button class="btn btn-warning btn-sm" data-widget="collapse"><span
+                                                            class="glyphicon glyphicon-minus"></span></button>
+                                                </div>
+                                            </div>
+                                            <div class="box-body">
+                                                <table class="table table-striped text-center">
+                                                    <tbody>
+
+                                                    </tbody>
+                                                </table>
+                                            </div><!-- /.box-body -->
+                                        </div><!-- /.box -->
+                                    </div>
+                                </div> <!-- /.百度百科结果 -->
+
+                                <!-- 维基百科结果 -->
+                                <div role="tabpanel" class="tab-pane" id="zhwiki">
+                                    <div id="search-result2" class="box-body">
+                                        <div id="entity-graph2" class="panel panel-default" style="width:100%;">
+                                        </div>
+                                        <!-- Information -->
+                                        <div id="information2" class="box box-solid box-primary">
+                                            <div class="box-header">
+                                                <h3 class="box-title">Information</h3>
+                                                <div class="box-tools pull-right">
+                                                    <button class="btn btn-primary btn-sm" data-widget="collapse"><span
+                                                            class="glyphicon glyphicon-minus"></span></button>
+                                                </div>
+                                            </div>
+                                            <div class="box-body">
+                                                <p class="well">
+                                                </p>
+                                            </div><!-- /.box-body -->
+                                        </div><!-- /.box  Information -->
+                                        <!-- Info box -->
+                                        <div id="infobox2" class="box box-solid box-info">
+                                            <div class="box-header">
+                                                <h3 class="box-title">InfoBox</h3>
+                                                <div class="box-tools pull-right">
+                                                    <button class="btn btn-info btn-sm" data-widget="collapse"><span
+                                                            class="glyphicon glyphicon-minus"></span></button>
+                                                </div>
+                                            </div>
+                                            <div class="box-body">
+                                                <table class="table table-striped text-center">
+                                                    <tbody>
+
+                                                    </tbody>
+                                                </table>
+                                            </div><!-- /.box-body -->
+                                        </div><!-- /.infobox -->
+
+                                    </div>
+                                </div> <!-- /.维基百科结果 -->
                             </div>
-                        </div><!-- /.box-body -->
+
+                        </div>
+
                     </div>
 
-                    <!-- Information -->
-                    <div id="information" class="box box-solid box-primary hidden">
-                        <div class="box-header">
-                            <h3 class="box-title">Information</h3>
-                            <div class="box-tools pull-right">
-                                <button class="btn btn-primary btn-sm" data-widget="collapse"><span
-                                        class="glyphicon glyphicon-minus"></span></button>
-                            </div>
-                        </div>
-                        <div class="box-body">
-                            <p class="well">
-                            </p>
-                        </div><!-- /.box-body -->
-                    </div><!-- /.box  Information -->
 
-                    <!-- Info box -->
-                    <div id="infobox" class="box box-solid box-info hidden">
-                        <div class="box-header">
-                            <h3 class="box-title">InfoBox</h3>
-                            <div class="box-tools pull-right">
-                                <button class="btn btn-info btn-sm" data-widget="collapse"><span
-                                        class="glyphicon glyphicon-minus"></span></button>
-                            </div>
-                        </div>
-                        <div class="box-body">
-                            <table class="table table-striped text-center">
-                                <tbody>
-
-                                </tbody>
-                            </table>
-                        </div><!-- /.box-body -->
-                    </div><!-- /.box -->
-
-                    <!-- DBpedia Type -->
-                    <div id="dbpedia-type" class="box box-solid box-success hidden">
-                        <div class="box-header">
-                            <h3 class="box-title">DBpedia Type</h3>
-                            <div class="box-tools pull-right">
-                                <button class="btn btn-success btn-sm" data-widget="collapse"><span
-                                        class="glyphicon glyphicon-minus"></span></button>
-                            </div>
-                        </div>
-                        <div class="box-body">
-                            <table class="table table-striped text-center">
-                                <tbody>
-
-                                </tbody>
-                            </table>
-                        </div><!-- /.box-body -->
-                    </div><!-- /.box -->
-
-                    <!-- Baidu Baike Tag -->
-                    <div id="baidu-tag" class="box box-solid box-warning hidden">
-                        <div class="box-header">
-                            <h3 class="box-title">Baidu Baike Tag</h3>
-                            <div class="box-tools pull-right">
-                                <button class="btn btn-warning btn-sm" data-widget="collapse"><span
-                                        class="glyphicon glyphicon-minus"></span></button>
-                            </div>
-                        </div>
-                        <div class="box-body">
-                            <table class="table table-striped text-center">
-                                <tbody>
-
-                                </tbody>
-                            </table>
-                        </div><!-- /.box-body -->
-                    </div><!-- /.box -->
                 </section>
             </div><!-- /.main row -->
 
@@ -185,6 +243,7 @@
 <script>
 
     $(function () {
+        console.log(${entities})
         var mention = '${mention}'
         var entityNames = ${entityNames};
         var entityInfos = ${entityInfos};
