@@ -1,24 +1,17 @@
 package cn.youedata.KG.Controller;
 
-import cn.youedata.KG.Dao.EntityDaoImpl;
-import cn.youedata.KG.Dao.Ment2EntDaoImpl;
-import cn.youedata.KG.Dao.TripleDaoImpl;
 import cn.youedata.KG.Global;
 import cn.youedata.KG.Service.QueryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
-import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.UnsupportedEncodingException;
 import java.util.*;
-import java.util.function.BiConsumer;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -57,15 +50,56 @@ public class QueryController {
 
 
     /**
+     * 通过mention获取kg_base知识库中的所有实体名字
+     *
+     * @param mention
+     * @param kg_base
+     * @return List<String></>
+     */
+    @RequestMapping(value = "/query.do", params = {"mention", "kg_base"})
+    @ResponseBody
+    public List<String> mentionToEntityNames(String mention, String kg_base) {
+        return queryService.getEntityIdsByMention(mention, kg_base);
+    }
+
+
+    /**
+     * 通过实体名字获取kg_base知识库中的所有与实体有关的关系
+     *
+     * @param entity
+     * @param kg_base
+     * @return map 谓语对应的宾语只有一个，则value为string，否则为一个list,
+     */
+    @RequestMapping(value = "/info.do", params = {"entity", "kg_base"})
+    @ResponseBody
+    public Map<String, Object> entityInfo(String entity, String kg_base) {
+        return queryService.getAllInfosByEntity(entity, kg_base);
+    }
+
+    /**
+     * 通过实体名字和属性名字获取kg_base知识库中的返回值
+     *
+     * @param entity
+     * @param attribute
+     * @param kg_base
+     * @return list
+     */
+    @RequestMapping(value = "/attr.do", params = {"entity", "attribute", "kg_base"})
+    @ResponseBody
+    public List<String> attrOfEntity(String entity, String attribute, String kg_base) {
+        return queryService.getOneInfoByEntityAndAttribute(entity, attribute, kg_base);
+    }
+
+    /**
      * 通过mention获取所有实体名字
      *
      * @param mention
      * @return List<String></>
      */
-    @RequestMapping(value = "/query.do")
+    @RequestMapping(value = "/query.do", params = "mention")
     @ResponseBody
-    public List<String> mentionToEntityNames(String mention) {
-        return queryService.getEntityIdsByMention(mention, Global.KG_BAIDUBAIKE);
+    public Map<String, List<String>> mentionToEntityNames(String mention) {
+        return queryService.getEntityIdsByMention(mention);
     }
 
 
@@ -75,10 +109,10 @@ public class QueryController {
      * @param entity
      * @return map 谓语对应的宾语只有一个，则value为string，否则为一个list,
      */
-    @RequestMapping(value = "/info.do")
+    @RequestMapping(value = "/info.do", params = {"entity"})
     @ResponseBody
-    public Map<String, Object> entityInfo(String entity) {
-        return queryService.getAllInfosByEntity(entity, Global.KG_BAIDUBAIKE);
+    public Map<String, Map<String, Object>> entityInfo(String entity) {
+        return queryService.getAllInfosByEntity(entity);
     }
 
     /**
@@ -88,10 +122,9 @@ public class QueryController {
      * @param attribute
      * @return list
      */
-    @RequestMapping(value = "/attr.do")
+    @RequestMapping(value = "/attr.do", params = {"entity", "attribute"})
     @ResponseBody
-    public List<String> attrOfEntity(String entity, String attribute) {
-        System.out.println(entity);
-        return queryService.getOneInfoByEntityAndAttribute(entity, attribute, Global.KG_BAIDUBAIKE);
+    public Map<String, List<String>> attrOfEntity(String entity, String attribute) {
+        return queryService.getOneInfoByEntityAndAttribute(entity, attribute);
     }
 }
