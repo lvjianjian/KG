@@ -67,11 +67,20 @@ public class QueryService {
         List<Document> documents = ment2EntDao.find(Global.KG_COLLECTION_MENT2ENT_FIELD_NAME_MENTION,
                 mention,
                 kg_base);
+        boolean add_entity = false;
+        if (entityDao.exist(mention, kg_base)) {
+            add_entity = true;
+        }
+        String temp = null;
         if (documents != null)
             for (Document doc : documents) {
-                l.add(doc.getString(Global.KG_COLLECTION_MENT2ENT_FIELD_NAME_ENTITY));
+                temp = doc.getString(Global.KG_COLLECTION_MENT2ENT_FIELD_NAME_ENTITY);
+                l.add(temp);
+                if (temp.equals(mention))
+                    add_entity = false;
             }
-
+        if (add_entity)
+            l.add(mention);
         logger.info(String.format("query %s in %s: size = %d", mention, kg_base, l.size()));
         return l;
     }
