@@ -348,10 +348,11 @@
     })
 
     var bdbaikeChart = echarts.init(document.getElementById('bdbaike-graph'));
-    draw_kg(entityName, entityInfo["bdbaike"],bdbaikeChart, kg_option_1, document.getElementById('bdbaike-graph'))
     window.onresize = function () {
-        myChart.resize();
+        bdbaikeChart.resize();
     };
+    draw_kg(entityName, entityInfo["bdbaike"],bdbaikeChart, kg_option_1, document.getElementById('bdbaike-graph'))
+    bdbaikeChart.resize();
 
     function getLength(map) {
         var size = 0;
