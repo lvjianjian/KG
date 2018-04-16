@@ -34,7 +34,7 @@ public class QueryController {
     public ModelAndView test1(String entity) {
         logger.info("test3");
         ModelAndView modelAndView = new ModelAndView("test3");
-        Map<String, Object> allInfosByEntity = queryService.getAllInfosByEntity(entity, Global.KG_BAIDUBAIKE);
+        Map<String, List> allInfosByEntity = queryService.getAllInfosByEntity(entity, Global.KG_BAIDUBAIKE);
         ObjectMapper mapper = new ObjectMapper();
         modelAndView.addObject("entity", entity);
         try {
@@ -72,7 +72,7 @@ public class QueryController {
      */
     @RequestMapping(value = "/info.do", params = {"entity", "kg_base"})
     @ResponseBody
-    public Map<String, Object> entityInfo(String entity, String kg_base) {
+    public Map<String, List> entityInfo(String entity, String kg_base) {
         return queryService.getAllInfosByEntity(entity, kg_base);
     }
 
@@ -111,7 +111,7 @@ public class QueryController {
      */
     @RequestMapping(value = "/info.do", params = {"entity"})
     @ResponseBody
-    public Map<String, Map<String, Object>> entityInfo(String entity) {
+    public Map<String, Map<String, List>> entityInfo(String entity) {
         return queryService.getAllInfosByEntity(entity);
     }
 

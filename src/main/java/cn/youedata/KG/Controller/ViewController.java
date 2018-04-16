@@ -53,7 +53,7 @@ public class ViewController {
         String entityNamesString = null, entityInfosString = null;
         ObjectMapper mapper = new ObjectMapper();
         List<String> entityNames = queryService.getEntityIdsByMention(mention, Global.KG_BAIDUBAIKE);
-        Map<String, Object> entityInfos = queryService.getAllInfosByEntity(mention, Global.KG_BAIDUBAIKE);
+        Map<String, List> entityInfos = queryService.getAllInfosByEntity(mention, Global.KG_BAIDUBAIKE);
         try {
             if (entityInfos.size() != 0) {
                 entityInfosString = mapper.writeValueAsString(entityInfos);
@@ -84,9 +84,9 @@ public class ViewController {
         ModelAndView modelAndView = new ModelAndView("search");
         ObjectMapper mapper = new ObjectMapper();
         List<String> entityNames = queryService.getEntityIdsByMention(mention, Global.KG_BAIDUBAIKE);
-        Map<String, Object> entityInfos = queryService.getAllInfosByEntity(entity, Global.KG_BAIDUBAIKE);
+        Map<String, List> entityInfos = queryService.getAllInfosByEntity(entity, Global.KG_BAIDUBAIKE);
         try {
-            Map<String, Object> mentionInfos = queryService.getAllInfosByEntity(mention, Global.KG_BAIDUBAIKE);
+            Map<String, List> mentionInfos = queryService.getAllInfosByEntity(mention, Global.KG_BAIDUBAIKE);
             if (mentionInfos != null && mentionInfos.size() != 0) {
                 entityNames.add(mention);
             }
