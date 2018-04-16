@@ -47,6 +47,11 @@ public final class Global {
     public static String KG_COLLECTION_NAME_MENT2ENT = "Ment2ent";
 
     /**
+     * Predicates数据集合名字
+     */
+    public static String KG_COLLECTION_NAME_Predicate = "Predicates";
+
+    /**
      * ment2ent数据集合mention字段名
      */
     public static String KG_COLLECTION_MENT2ENT_FIELD_NAME_MENTION = "m";

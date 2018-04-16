@@ -32,6 +32,9 @@ public class QueryService {
     @Autowired
     SameAsDaoImpl sameAsDao;
 
+    @Autowired
+    PredicateDaoImpl predicateDao;
+
     private static Logger logger = Logger.getLogger(QueryService.class);
 
     /**
@@ -117,11 +120,22 @@ public class QueryService {
                 entity, kg_base);
         if (relationsByEntity == null || relationsByEntity.size() == 0) return map;
 
-
+        List<Document> predicateDocuments = null;
+        Document document = null;
+        String objective = null;
         for (int i = 0; i < relationsByEntity.size(); i++) {
-            Document document = relationsByEntity.get(i);
+            document = relationsByEntity.get(i);
             String predicate = document.getString(Global.KG_COLLECTION_TRIPLES_FIELD_NAME_PREDICATE);
-            String objective = document.getString(Global.KG_COLLECTION_TRIPLES_FIELD_NAME_OBJECT);
+            //对zhwiki的谓语做转化
+            if (Global.KG_ZHWIKI.equals(kg_base)) {
+                predicateDocuments = predicateDao.find(Global.KG_COLLECTION_FIELD_NAME_ID, predicate, kg_base);
+                if (predicateDocuments.size() == 0) {
+                    logger.warn("no this predicate: " + predicate);
+                } else {
+                    predicate = predicateDocuments.get(0).getString(Global.KG_COLLECTION_FIELD_NAME_LABEL);
+                }
+            }
+            objective = document.getString(Global.KG_COLLECTION_TRIPLES_FIELD_NAME_OBJECT);
             if (!map.containsKey(predicate)) {
                 map.put(predicate, objective);
             } else {
