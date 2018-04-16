@@ -46,6 +46,7 @@ public class ViewController {
     }
 
     @RequestMapping(value = "/search", params = {"mention"})
+<<<<<<< HEAD
     public String search(String mention) {
         return "search_entities";
     }
@@ -58,6 +59,38 @@ public class ViewController {
     @RequestMapping(value = "/search", params = {"mention", "entity", "kg"})
     public String search(String mention, String entity, String kg) {
         return "search_result";
+=======
+    public ModelAndView search(String mention) {
+        ModelAndView modelAndView = new ModelAndView("search");
+        if (mention == null || mention.length() == 0) {
+            return modelAndView;
+        }
+        String entity = "";
+        String entityNamesString = null, entityInfosString = null;
+        ObjectMapper mapper = new ObjectMapper();
+        List<String> entityNames = queryService.getEntityIdsByMention(mention, Global.KG_BAIDUBAIKE);
+        Map<String, List> entityInfos = queryService.getAllInfosByEntity(mention, Global.KG_BAIDUBAIKE);
+        try {
+            if (entityInfos.size() != 0) {
+                entityInfosString = mapper.writeValueAsString(entityInfos);
+                entityNames.add(mention);
+                entity = mention;
+            } else if (entityNames.size() != 0) {
+                entityInfosString = mapper.writeValueAsString(queryService.getAllInfosByEntity(entityNames.get(0), Global.KG_BAIDUBAIKE));
+                entity = entityNames.get(0);
+            } else {
+                entityInfosString = mapper.writeValueAsString(new ArrayList<>());
+            }
+            entityNamesString = mapper.writeValueAsString(entityNames);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        modelAndView.addObject("mention", mention);
+        modelAndView.addObject("entityNames", entityNamesString);
+        modelAndView.addObject("entityInfos", entityInfosString);
+        modelAndView.addObject("entity", entity);
+        return modelAndView;
+>>>>>>> a4aad5c92f4d6a66516fde15bea5424fbc508623
     }
 
     /**
@@ -70,9 +103,9 @@ public class ViewController {
         ModelAndView modelAndView = new ModelAndView("search");
         ObjectMapper mapper = new ObjectMapper();
         List<String> entityNames = queryService.getEntityIdsByMention(mention, Global.KG_BAIDUBAIKE);
-        Map<String, Object> entityInfos = queryService.getAllInfosByEntity(entity, Global.KG_BAIDUBAIKE);
+        Map<String, List> entityInfos = queryService.getAllInfosByEntity(entity, Global.KG_BAIDUBAIKE);
         try {
-            Map<String, Object> mentionInfos = queryService.getAllInfosByEntity(mention, Global.KG_BAIDUBAIKE);
+            Map<String, List> mentionInfos = queryService.getAllInfosByEntity(mention, Global.KG_BAIDUBAIKE);
             if (mentionInfos != null && mentionInfos.size() != 0) {
                 entityNames.add(mention);
             }

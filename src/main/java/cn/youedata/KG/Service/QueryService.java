@@ -106,8 +106,8 @@ public class QueryService {
      * @param entity
      * @return map key为知识库基名，value为对应知识库的该实体的所有三元组
      */
-    public Map<String, Map<String, Object>> getAllInfosByEntity(String entity) {
-        Map<String, Map<String, Object>> res = new HashMap<>();
+    public Map<String, Map<String, List>> getAllInfosByEntity(String entity) {
+        Map<String, Map<String, List>> res = new HashMap<>();
         for (String kg_base : Global.KG_BASES) {
             res.put(kg_base, getAllInfosByEntity(entity, kg_base));
         }
@@ -122,8 +122,8 @@ public class QueryService {
      * @param kg_base 指定的知识库名字
      * @return map 谓语对应的宾语只有一个，则value为string，否则为一个list,
      */
-    public Map<String, Object> getAllInfosByEntity(String entity, String kg_base) {
-        Map<String, Object> map = new HashMap<>();
+    public Map<String, List> getAllInfosByEntity(String entity, String kg_base) {
+        Map<String, List> map = new HashMap<>();
         if (entity == null || entity.equals("")) return map;
         List<Document> relationsByEntity = tripleDao.find(Global.KG_COLLECTION_TRIPLES_FIELD_NAME_SUBJECT,
                 entity, kg_base);
@@ -144,19 +144,15 @@ public class QueryService {
                     predicate = predicateDocuments.get(0).getString(Global.KG_COLLECTION_FIELD_NAME_LABEL);
                 }
             }
+
             objective = document.getString(Global.KG_COLLECTION_TRIPLES_FIELD_NAME_OBJECT);
             if (!map.containsKey(predicate)) {
-                map.put(predicate, objective);
+                ArrayList<String> objects = new ArrayList<>();
+                objects.add(objective);
+                map.put(predicate, objects);
             } else {
-                Object o = map.get(predicate);
-                if (o instanceof String) {
-                    ArrayList<String> objects = new ArrayList<>();
-                    objects.add((String) o);
-                    objects.add(objective);
-                    map.put(predicate, objects);
-                } else {
-                    ((List) o).add(objective);
-                }
+                List l = map.get(predicate);
+                l.add(objective);
             }
         }
 
@@ -187,16 +183,11 @@ public class QueryService {
      * @return 返回一个list
      */
     public List<String> getOneInfoByEntityAndAttribute(String entity, String attribute, String kg_base) {
-        Map<String, Object> allInfosByEntity = getAllInfosByEntity(entity, kg_base);
+        Map<String, List> allInfosByEntity = getAllInfosByEntity(entity, kg_base);
         List<String> return_values = null;
         if (allInfosByEntity.containsKey(attribute)) {
-            Object o = allInfosByEntity.get(attribute);
-            if (o instanceof String) {
-                return_values = new ArrayList<>();
-                return_values.add((String) o);
-            } else {
-                return_values = (List) o;
-            }
+            List o = allInfosByEntity.get(attribute);
+            return_values = o;
         } else return_values = new ArrayList<>();
         return return_values;
     }
