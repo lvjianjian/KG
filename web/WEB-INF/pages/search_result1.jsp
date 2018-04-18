@@ -110,6 +110,7 @@
                                     <p class="well" v-for="i in information">
                                         <span v-html="i"></span>
                                         </span>
+                                    </p>
                                 </div><!-- /.box-body -->
                             </div><!-- /.box  Information -->
 
