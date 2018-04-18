@@ -82,14 +82,20 @@
                 <ul id="result-tab" class="nav nav-tabs">
                     <li :class="{active:bdbaikeIsActive}"><a href="#bdbaike-result" data-toggle="tab">百度百科</a></li>
                     <li :class="{active:zhwikiIsActive}"><a href="#zhwiki-result" data-toggle="tab">维基百科</a></li>
+                    <li :class="{active:hdbaikeIsActive}"><a href="#zhwiki-result" data-toggle="tab">维基百科</a></li>
                 </ul>
 
                 <div id="result-tab-content" class="tab-content">
-                    <div :class="['tab-pane', 'fade', 'in', {active:bdbaikeIsActive}]" id="bdbaike-result">
                         <div class="row">
-                            <div id="bdbaike-graph" class="panel panel-default col-lg-12" style="width:100%; height: 0px;">
-                            </div>
+
                             <section class="col-lg-12">
+
+                                <!-- Graph -->
+                                <div class="panel panel-default">
+                                    <div id="bdbaike-graph" class="panel-body" style="width:100%; height: 50px">
+                                    </div>
+                                </div>
+
                                 <!-- Information -->
                                 <div id="bdbaike-information" :class="['box', 'box-solid', 'box-primary', {hidden: isHidden.bdbaikeInformation}]">
                                     <div class="box-header">
@@ -176,75 +182,7 @@
                         </div>
                     </div>
 
-                    <div :class="['tab-pane', 'fade', 'in', {active:zhwikiIsActive}]" id="zhwiki-result">
-                        <div class="row">
-                            <section class="col-lg-12">
-                                <div id="zhwiki-graph" class="panel panel-default" style="width:100%;">
-                                </div>
-                                <!-- Information -->
-                                <div id="zhwiki-information" :class="['box', 'box-solid', 'box-primary', {hidden: isHidden.zhwikiInformation}]">
-                                    <div class="box-header">
-                                        <h3 class="box-title">Information</h3>
-                                        <div class="box-tools pull-right">
-                                            <button class="btn btn-primary btn-sm" data-widget="collapse"><span
-                                                    class="glyphicon glyphicon-minus"></span></button>
-                                        </div>
-                                    </div>
-                                    <div class="box-body">
-                                        <p class="well" v-html="zhwikiInformation">
-                                        </p>
-                                    </div><!-- /.box-body -->
-                                </div><!-- /.box  Information -->
-
-                                <!-- Info box -->
-                                <div id="zhwiki-infobox" :class="['box', 'box-solid', 'box-info', {hidden: isHidden.zhwikiInfobox}]">
-                                    <div class="box-header">
-                                        <h3 class="box-title">InfoBox</h3>
-                                        <div class="box-tools pull-right">
-                                            <button class="btn btn-info btn-sm" data-widget="collapse"><span
-                                                    class="glyphicon glyphicon-minus"></span></button>
-                                        </div>
-                                    </div>
-                                    <div class="box-body">
-                                        <table class="table table-striped text-center">
-                                            <tbody>
-                                                <tr class='row' v-for="(key,value) in zhwikiInfoboxes">
-                                                    <td style='width: 50%' v-html="value"></td>
-                                                    <td style='width: 50%' v-html="key"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div><!-- /.box-body -->
-                                </div><!-- /.infobox -->
-
-                                <!-- DBpedia Category -->
-                                <div id="zhwiki-category" :class="['box', 'box-solid', 'box-success', {hidden: isHidden.zhwikiCategory}]">
-                                    <div class="box-header">
-                                        <h3 class="box-title">Category</h3>
-                                        <div class="box-tools pull-right">
-                                            <button class="btn btn-success btn-sm" data-widget="collapse"><span
-                                                    class="glyphicon glyphicon-minus"></span></button>
-                                        </div>
-                                    </div>
-                                    <div class="box-body">
-                                        <table class="table table-striped text-center">
-                                            <tbody>
-                                            <tr class='row'>
-                                            <tr class='row' v-for="category in zhwikiCategories">
-                                                <td style='width: 50%'> CATEGORY </td>
-                                                <td style='width: 50%'>{{category}}</td>
-                                            </tr>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div><!-- /.box-body -->
-                                </div><!-- /.DBpedia Type -->
-
-                                </section>
-                        </div>
-                    </div>
                 </div>
-            </div>
         </section><!-- /.Main content -->
     </aside><!-- /.right-side -->
 </div><!-- ./wrapper -->
@@ -258,6 +196,7 @@
         crossorigin="anonymous"></script>
 <!-- Vue开发环境版本，包含了用帮助的命令行警告 -->
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <!-- app.js -->
 
 <script src="${pageContext.request.contextPath}/js/app.js" type="text/javascript"></script>

@@ -57,7 +57,7 @@ public class ViewController {
 
     @RequestMapping(value = "/search", params = {"mention", "entity", "kg"})
     public String search(String mention, String entity, String kg) {
-        return "search_result";
+        return "search_result1";
     }
 
     /**
