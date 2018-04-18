@@ -127,4 +127,11 @@ public class QueryController {
     public Map<String, List<String>> attrOfEntity(String entity, String attribute) {
         return queryService.getOneInfoByEntityAndAttribute(entity, attribute);
     }
+
+    @RequestMapping(value = "/sameAs.do", params = {"entity", "kg_base"})
+    @ResponseBody
+    public Map<String, List<String>> samasFromOneBase(String entity, String kg_base) {
+        return queryService.getSameAsAboutOneKGBase(kg_base, entity);
+    }
+
 }
