@@ -26,9 +26,14 @@ public final class Global {
     public static String KG_ZHWIKI = "zhwiki";
 
     /**
+     * 互动百科的Collection的base名
+     */
+    public static String KG_HUDONGBAIKE = "hdbaike";
+
+    /**
      * 所有知识库的base名
      */
-    public static String[] KG_BASES = {KG_BAIDUBAIKE, KG_ZHWIKI};
+    public static String[] KG_BASES = {KG_BAIDUBAIKE, KG_ZHWIKI, KG_HUDONGBAIKE};
 
     /**
      * 数据集合id字段名
