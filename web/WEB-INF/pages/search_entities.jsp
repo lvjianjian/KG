@@ -71,7 +71,7 @@
                                       method="get">
                                     <input name="mention" type="text" class="form-control" placeholder="Search for...">
                                     <span class="input-group-btn">
-                                        <input class="btn btn-default bg-gray" type="submit" value="Search"/>
+                                        <input class="btn btn-default bg-gray" type="submit" value="Search" v-on:click="isNull()"/>
                                     </span>
                                 </form>
                             </div>
@@ -80,35 +80,51 @@
                 </section>
             </div><!-- /.main row -->
 
-            <div class="row">
+            <div id="entity-list" class="row">
+
                 <!-- BaiduBaike -->
-                <section id="baidu-entities" :class="[{hidden: classObject.isHidden}, classObject.isLarge ? 'col-md-12' : 'col-md-6']">
+                <section :class="[setWidth(),{hidden:isHidden(entities['bdbaike'])}]">
                     <div class="box box-success">
                         <div class="box-header">
                             <h3 class="box-title">百度百科</h3>
                         </div><!-- /.box-header -->
                         <div class="box-body">
                             <ul class="todo-list">
-                                <li v-for="entity in entities">
+                                <li v-for="entity in entities['bdbaike']">
                                     <!-- todo text -->
-                                    <span class="text"><a v-on:click="search(entity)">{{entity}}</a></span>
+                                    <span class="text"><a v-on:click="search(entity, 'bdbaike')">{{entity}}</a></span>
                                 </li>
                             </ul>
                         </div><!-- /.box-body -->
                     </div><!-- /.box -->
                 </section>
 
-                <!-- ZhwikiBaike -->
-                <section id="zhwiki-entities" :class="[{hidden: classObject.isHidden}, classObject.isLarge ? 'col-md-12' : 'col-md-6']">
-                    <div class="box box-primary">
+                <section :class="[setWidth(),{hidden:isHidden(entities['zhwiki'])}]">
+                    <div class="box box-info">
                         <div class="box-header">
                             <h3 class="box-title">维基百科</h3>
                         </div><!-- /.box-header -->
                         <div class="box-body">
                             <ul class="todo-list">
-                                <li v-for="entity in entities">
+                                <li v-for="entity in entities['zhwiki']">
                                     <!-- todo text -->
-                                    <span class="text"><a v-on:click="search(entity)">{{entity}}</a></span>
+                                    <span class="text"><a v-on:click="search(entity, 'zhwiki')">{{entity}}</a></span>
+                                </li>
+                            </ul>
+                        </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </section>
+
+                <section :class="[setWidth(),{hidden:isHidden(entities['hdbaike'])}]">
+                    <div class="box box-warning">
+                        <div class="box-header">
+                            <h3 class="box-title">互动百科</h3>
+                        </div><!-- /.box-header -->
+                        <div class="box-body">
+                            <ul class="todo-list">
+                                <li v-for="entity in entities['hdbaike']">
+                                    <!-- todo text -->
+                                    <span class="text"><a v-on:click="search(entity, 'hdbaike')">{{entity}}</a></span>
                                 </li>
                             </ul>
                         </div><!-- /.box-body -->
@@ -136,21 +152,48 @@
 <script src="${pageContext.request.contextPath}/js/echarts.js"></script>
 <script src="${pageContext.request.contextPath}/js/youe_echarts.js"></script>
 <script>
-    var mention = '${param.mention}';
-    var entities;
-    $.ajaxSettings.async = false;
+
+    var entityList = new Vue({
+        el: "#entity-list",
+        data: {
+            mention: '${param.mention}',
+            entities: JSON.parse("{}")
+        },
+        methods: {
+            search: function (entity, kg_name) {
+                window.location.href='${pageContext.request.contextPath}/view/search?mention='+this.mention+'&entity='+entity+'&kg_base='+kg_name
+            },
+            isHidden: function (entities) {
+                return getLength(entities) === 0;
+            },
+            getKgNum: function () {
+                var kgs = new Array('bdbaike', 'hdbaike', 'zhwiki')
+                var num = 0
+                for(i in kgs) {
+                    if (getLength(this.entities[kgs[i]]) !== 0) num += 1;
+                }
+                return num;
+            },
+            setWidth: function () {
+                var num = this.getKgNum()
+                if (num === 0) return "col-lg-12";
+                else return "col-lg-"+ String(12 / num);
+            }
+        }
+    })
+
     $.ajax({
         url: "${pageContext.request.contextPath}/search/query.do",
         type: "GET",
         data :{
-            mention: mention
+            mention: entityList.mention
         },
         dataType: "json",
         beforeSend:function(){
             console.log('发送前')
         },
         success:function(data){
-            entities = data
+            entityList.entities = data
             console.log(data)
         },
         error:function(xhr,textStatus){
@@ -162,40 +205,15 @@
             console.log('结束')
         }
     })
-    console.log("entities:",entities)
-    // entities = {"bdbaike":["111","222"], "zhwiki":["333","4444"]}
 
-    new Vue({
-        el: '#baidu-entities',
-        data: {
-            entities: entities["bdbaike"],
-            classObject: {
-                isHidden: entities.length === 0 || entities['bdbaike'].length === 0,
-                isLarge: entities.length === 0 || entities['zhwiki'].length === 0
-            }
-        },
-        methods: {
-            search: function (entity) {
-                window.location.href='${pageContext.request.contextPath}/view/search?mention='+mention+'&entity='+entity+'&kg=bdbaike';
-            }
-        }
-    })
 
-    new Vue({
-        el: '#zhwiki-entities',
-        data: {
-            entities: entities["zhwiki"],
-            classObject: {
-                isHidden: entities.length === 0 || entities['zhwiki'].length === 0,
-                isLarge: entities.length === 0 || entities['bdbaike'].length === 0
-            }
-        },
-        methods: {
-            search: function (entity) {
-                window.location.href='${pageContext.request.contextPath}/view/search?mention='+mention+'&entity='+entity+'&kg_base=zhwiki';
-            }
-        }
-    })
+    function getLength(map) {
+        var size = 0;
+        $.each(map, function (key, value) {
+            size += 1;
+        })
+        return size;
+    }
 
 </script>
 </body>

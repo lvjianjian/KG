@@ -81,9 +81,9 @@
             <div id="search-result">
 
                 <ul id="result-tab" class="nav nav-tabs">
-                    <li :class="{active:bdbaikeIsActive}"><a href="#bdbaike-result" data-toggle="tab">百度百科</a></li>
-                    <li :class="{active:zhwikiIsActive}"><a href="#zhwiki-result" data-toggle="tab">维基百科</a></li>
-                    <li :class="{active:hdbaikeIsActive}"><a href="#zhwiki-result" data-toggle="tab">维基百科</a></li>
+                    <li :class="{active:isThisKg('bdbaike')}"><a v-on:click="sameAs(entityName, 'bdbaike')" data-toggle="tab">百度百科</a></li>
+                    <li :class="{active:isThisKg('zhwiki')}"><a v-on:click="sameAs(entityName, 'zhwiki')" data-toggle="tab">维基百科</a></li>
+                    <li :class="{active:isThisKg('hdbaike')}"><a v-on:click="sameAs(entityName, 'hdbaike')" data-toggle="tab">互动百科</a></li>
                 </ul>
 
                 <div id="result-tab-content" class="tab-content">
@@ -93,7 +93,7 @@
 
                             <!-- Graph -->
                             <div class="panel panel-default">
-                                <div id="graph" class="panel-body" style="width:100%; height: 1000px">
+                                <div id="graph" class="panel-body" style="width:100%; height: 50px">
                                 </div>
                             </div>
 
@@ -108,8 +108,8 @@
                                 </div>
                                 <div class="box-body">
                                     <p class="well" v-for="i in information">
-                                        {{i}}
-                                    </p>
+                                        <span v-html="i"></span>
+                                        </span>
                                 </div><!-- /.box-body -->
                             </div><!-- /.box  Information -->
 
@@ -148,11 +148,11 @@
                                     <table class="table table-striped text-center">
                                         <tbody>
                                         <tr class='row' v-for="type in types">
-                                            <td style='width: 50%'>
+                                            <td style='width: 30%'>
                                                 <a href='https://www.w3.org/1999/02/22-rdf-syntax-ns#type'>rdf:type</a>
                                             </td>
 
-                                            <td style='width: 50%'>
+                                            <td style='width: 70%'>
                                                 <a v-on:click="redirect(type)">http://dbpedia.org/ontology/{{type}}</a>
                                             </td>
                                         </tr>
@@ -174,8 +174,8 @@
                                     <table class="table table-striped text-center">
                                         <tbody>
                                         <tr class='row' v-for="tag in tags">
-                                            <td style='width: 50%'> 标签</td>
-                                            <td style='width: 50%'>{{tag}}</td>
+                                            <td style='width: 30%'> 标签</td>
+                                            <td style='width: 70%'>{{tag}}</td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -195,8 +195,8 @@
                                     <table class="table table-striped text-center">
                                         <tbody>
                                         <tr class='row' v-for="category in categories">
-                                            <td style='width: 50%'> Category</td>
-                                            <td style='width: 50%'>{{category}}</td>
+                                            <td style='width: 30%'> Category</td>
+                                            <td style='width: 70%'>{{category}}</td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -230,19 +230,14 @@
 <script src="${pageContext.request.contextPath}/js/youe_echarts.js"></script>
 <script>
 
-    var myChart = echarts.init(document.getElementById('graph'))
-
     const result = new Vue({
         el: "#search-result",
         data: {
             mention: '${param.mention}',
             entityName: '${param.entity}',
             kgBase: '${param.kg_base}',
-            allInfo: JSON.parse("{}"),
-            sameAs: "",
-            bdbaikeIsActive: true,
-            zhwikiIsActive: false,
-            hdbaikeIsActive: false,
+            allInfo: JSON.parse("{}")
+            // sameAs: "",
         },
         computed: {
             information: function () {
@@ -270,17 +265,23 @@
 
         },
         methods: {
+            isThisKg: function (kg_name) {
+                return this.kgBase === kg_name
+            },
             isHidden: function (item) {
                 return getLength(item) <= 0;
+            },
+            sameAs: function (entityName, kg_base) {
+                window.location.href='${pageContext.request.contextPath}/view/search?mention='+this.mention+'&entity='+entityName+'&kg_base='+kg_base;
             }
         },
         watch: {
             infoboxes: function () {
-                alert(getLength(this.infoboxes))
-                draw_kg(result.entityName, result.allInfo, myChart, kg_option_1, document.getElementById('graph')),
-                window.onresize = function () {
-                    myChart.resize();
-                };
+                var myChart = echarts.init(document.getElementById('graph'))
+                draw_kg(result.entityName, result.infoboxes, myChart, kg_option_1, document.getElementById('graph')),
+                    window.onresize = function () {
+                        myChart.resize();
+                    };
             }
         }
     });
@@ -290,7 +291,7 @@
         type: "GET",
         data: {
             entity: result.entityName,
-            kg_base: 'zhwiki'
+            kg_base: result.kgBase
         },
         dataType: "json",
         beforeSend: function () {
@@ -309,75 +310,6 @@
             console.log('结束')
         }
     })
-
-
-    <%--var entityName = '${param.entity}'--%>
-    <%--var kg = '${param.kg}'--%>
-    <%--var entityInfo--%>
-
-    <%--$.ajaxSettings.async = false;--%>
-
-
-    <%--new Vue({--%>
-    <%--el: "#search-result",--%>
-    <%--data: {--%>
-    <%--bdbaikeInfo: entityInfo["bdbaike"],--%>
-    <%--bdbaikeInformation: entityInfo["bdbaike"]["DESC"],--%>
-    <%--bdbaikeTypes: entityInfo["bdbaike"]["TYPE"],--%>
-    <%--bdbaikeTags: entityInfo["bdbaike"]["TAG"],--%>
-
-    <%--zhwikiInfo: entityInfo["zhwiki"],--%>
-    <%--zhwikiInformation: entityInfo["zhwiki"]["DESC"],--%>
-    <%--zhwikiCategories: entityInfo["zhwiki"]["CATEGORY"],--%>
-
-    <%--bdbaikeIsActive: kg === "bdbaike",--%>
-    <%--zhwikiIsActive: kg === "zhwiki"--%>
-    <%--},--%>
-    <%--computed: {--%>
-    <%--bdbaikeInfoboxes: function () {--%>
-    <%--var ib = new Map();--%>
-    <%--var illegalKey = new Set(["DESC", "TAG", "TYPE", "CATEGORY_ZH"])--%>
-    <%--$.each(this.bdbaikeInfo, function (key, value) {--%>
-    <%--if (!illegalKey.has(key)) {--%>
-    <%--ib[key] = value;--%>
-    <%--}--%>
-    <%--})--%>
-    <%--return ib;--%>
-    <%--},--%>
-    <%--zhwikiInfoboxes: function () {--%>
-    <%--var ib = new Map();--%>
-    <%--var illegalKey = new Set(["DESC", "CATEGORY"])--%>
-    <%--$.each(this.zhwikiInfo, function (key, value) {--%>
-    <%--if (!illegalKey.has(key)) {--%>
-    <%--ib[key] = value;--%>
-    <%--}--%>
-    <%--})--%>
-    <%--return ib;--%>
-    <%--},--%>
-
-    <%--isHidden: function () {--%>
-    <%--return {--%>
-    <%--bdbaikeInformation: typeof(entityInfo["bdbaike"]["DESC"]) === "undefined",--%>
-    <%--bdbaikeInfobox: getLength(this.bdbaikeInfoboxes) === 0,--%>
-    <%--bdbaikeDBpediaType: typeof(entityInfo["bdbaike"]["TYPE"]) === "undefined",--%>
-    <%--bdbaikeBaiduBaikeTag: typeof(entityInfo["bdbaike"]["TAG"]) === "undefined",--%>
-
-    <%--zhwikiInformation: typeof(entityInfo["zhwiki"]["DESC"]) === "undefined",--%>
-    <%--zhwikiInfobox: getLength(this.zhwikiInfoboxes) === 0,--%>
-    <%--zhwikiCategory: typeof(entityInfo["zhwiki"]["CATEGORY"]) === "undefined"--%>
-    <%--}--%>
-    <%--}--%>
-    <%--},--%>
-    <%--})--%>
-
-
-
-    <%--// var zhwikiChart = echarts.init(document.getElementById('zhwiki-graph'));--%>
-    <%--// window.onresize = function () {--%>
-    <%--//     zhwikiChart.resize();--%>
-    <%--// };--%>
-    <%--// draw_kg(entityName, entityInfo["zhwiki"],zhwikiChart, kg_option_1, document.getElementById('zhwiki-graph'))--%>
-    <%--// zhwikiChart.resize();--%>
 
     function getLength(map) {
         var size = 0;
