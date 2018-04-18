@@ -79,6 +79,7 @@
                 </section>
             </div><!-- ./实体搜索 -->
             <div id="search-result">
+
                 <ul id="result-tab" class="nav nav-tabs">
                     <li :class="{active:bdbaikeIsActive}"><a href="#bdbaike-result" data-toggle="tab">百度百科</a></li>
                     <li :class="{active:zhwikiIsActive}"><a href="#zhwiki-result" data-toggle="tab">维基百科</a></li>
@@ -86,103 +87,127 @@
                 </ul>
 
                 <div id="result-tab-content" class="tab-content">
-                        <div class="row">
+                    <div class="row">
 
-                            <section class="col-lg-12">
+                        <section class="col-lg-12">
 
-                                <!-- Graph -->
-                                <div class="panel panel-default">
-                                    <div id="bdbaike-graph" class="panel-body" style="width:100%; height: 50px">
+                            <!-- Graph -->
+                            <div class="panel panel-default">
+                                <div id="graph" class="panel-body" style="width:100%; height: 1000px">
+                                </div>
+                            </div>
+
+                            <!-- Information -->
+                            <div :class="['box', 'box-solid', 'box-primary', {hidden: isHidden(information)}]">
+                                <div class="box-header">
+                                    <h3 class="box-title">Information</h3>
+                                    <div class="box-tools pull-right">
+                                        <button class="btn btn-primary btn-sm" data-widget="collapse"><span
+                                                class="glyphicon glyphicon-minus"></span></button>
                                     </div>
                                 </div>
+                                <div class="box-body">
+                                    <p class="well" v-for="i in information">
+                                        {{i}}
+                                    </p>
+                                </div><!-- /.box-body -->
+                            </div><!-- /.box  Information -->
 
-                                <!-- Information -->
-                                <div id="bdbaike-information" :class="['box', 'box-solid', 'box-primary', {hidden: isHidden.bdbaikeInformation}]">
-                                    <div class="box-header">
-                                        <h3 class="box-title">Information</h3>
-                                        <div class="box-tools pull-right">
-                                            <button class="btn btn-primary btn-sm" data-widget="collapse"><span
-                                                    class="glyphicon glyphicon-minus"></span></button>
-                                        </div>
+                            <!-- Info box -->
+                            <div :class="['box', 'box-solid', 'box-info', {hidden: isHidden(infoboxes)}]">
+                                <div class="box-header">
+                                    <h3 class="box-title">InfoBox</h3>
+                                    <div class="box-tools pull-right">
+                                        <button class="btn btn-info btn-sm" data-widget="collapse"><span
+                                                class="glyphicon glyphicon-minus"></span></button>
                                     </div>
-                                    <div class="box-body">
-                                        <p class="well" v-html="bdbaikeInformation">
-                                        </p>
-                                    </div><!-- /.box-body -->
-                                </div><!-- /.box  Information -->
+                                </div>
+                                <div class="box-body">
+                                    <table class="table table-striped text-center">
+                                        <tbody>
+                                        <tr class='row' v-for="(key,value) in infoboxes">
+                                            <td style='width: 30%' v-html="value"></td>
+                                            <td style='width: 70%'><span style="margin: 5px" v-for="k in key"
+                                                                         v-html="k"> </span></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div><!-- /.box-body -->
+                            </div><!-- /.infobox -->
 
-                                <!-- Info box -->
-                                <div id="bdbaike-infobox" :class="['box', 'box-solid', 'box-info', {hidden: isHidden.bdbaikeInfobox}]">
-                                    <div class="box-header">
-                                        <h3 class="box-title">InfoBox</h3>
-                                        <div class="box-tools pull-right">
-                                            <button class="btn btn-info btn-sm" data-widget="collapse"><span
-                                                    class="glyphicon glyphicon-minus"></span></button>
-                                        </div>
+                            <!-- DBpedia Type -->
+                            <div :class="['box', 'box-solid', 'box-success', {hidden: isHidden(types)}]">
+                                <div class="box-header">
+                                    <h3 class="box-title">DBpedia Type</h3>
+                                    <div class="box-tools pull-right">
+                                        <button class="btn btn-success btn-sm" data-widget="collapse"><span
+                                                class="glyphicon glyphicon-minus"></span></button>
                                     </div>
-                                    <div class="box-body">
-                                        <table class="table table-striped text-center">
-                                            <tbody>
-                                                <tr class='row' v-for="(key,value) in bdbaikeInfoboxes">
-                                                    <td style='width: 50%' v-html="value"></td>
-                                                    <td style='width: 50%' v-html="key"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div><!-- /.box-body -->
-                                </div><!-- /.infobox -->
+                                </div>
+                                <div class="box-body">
+                                    <table class="table table-striped text-center">
+                                        <tbody>
+                                        <tr class='row' v-for="type in types">
+                                            <td style='width: 50%'>
+                                                <a href='https://www.w3.org/1999/02/22-rdf-syntax-ns#type'>rdf:type</a>
+                                            </td>
 
-                                <!-- DBpedia Type -->
-                                <div id="bdbaike-type" :class="['box', 'box-solid', 'box-success', {hidden: isHidden.bdbaikeDBpediaType}]">
-                                    <div class="box-header">
-                                        <h3 class="box-title">DBpedia Type</h3>
-                                        <div class="box-tools pull-right">
-                                            <button class="btn btn-success btn-sm" data-widget="collapse"><span
-                                                    class="glyphicon glyphicon-minus"></span></button>
-                                        </div>
+                                            <td style='width: 50%'>
+                                                <a v-on:click="redirect(type)">http://dbpedia.org/ontology/{{type}}</a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div><!-- /.box-body -->
+                            </div><!-- /.DBpedia Type -->
+
+                            <!-- Baidu Baike Tag -->
+                            <div :class="['box', 'box-solid', 'box-warning', {hidden: isHidden(tags)}]">
+                                <div class="box-header">
+                                    <h3 class="box-title">Baidu Baike Tag</h3>
+                                    <div class="box-tools pull-right">
+                                        <button class="btn btn-warning btn-sm" data-widget="collapse"><span
+                                                class="glyphicon glyphicon-minus"></span></button>
                                     </div>
-                                    <div class="box-body">
-                                        <table class="table table-striped text-center">
-                                            <tbody>
-                                                <tr class='row' v-for="type in bdbaikeTypes">
-                                                    <td style='width: 50%' >
-                                                       <a href='https://www.w3.org/1999/02/22-rdf-syntax-ns#type'>rdf:type</a>
-                                                    </td>
+                                </div>
+                                <div class="box-body">
+                                    <table class="table table-striped text-center">
+                                        <tbody>
+                                        <tr class='row' v-for="tag in tags">
+                                            <td style='width: 50%'> 标签</td>
+                                            <td style='width: 50%'>{{tag}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div><!-- /.box-body -->
+                            </div><!-- /.box -->
 
-                                                    <td style='width: 50%'>
-                                                       <a v-on:click="redirect(type)">http://dbpedia.org/ontology/{{type}}</a>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div><!-- /.box-body -->
-                                </div><!-- /.DBpedia Type -->
-
-                                <!-- Baidu Baike Tag -->
-                                <div id="bdbaike-tag" :class="['box', 'box-solid', 'box-warning', {hidden: isHidden.bdbaikeBaiduBaikeTag}]">
-                                    <div class="box-header">
-                                        <h3 class="box-title">Baidu Baike Tag</h3>
-                                        <div class="box-tools pull-right">
-                                            <button class="btn btn-warning btn-sm" data-widget="collapse"><span
-                                                    class="glyphicon glyphicon-minus"></span></button>
-                                        </div>
+                            <!-- Category -->
+                            <div :class="['box', 'box-solid', 'box-warning', {hidden: isHidden(categories)}]">
+                                <div class="box-header">
+                                    <h3 class="box-title">Category</h3>
+                                    <div class="box-tools pull-right">
+                                        <button class="btn btn-warning btn-sm" data-widget="collapse"><span
+                                                class="glyphicon glyphicon-minus"></span></button>
                                     </div>
-                                    <div class="box-body">
-                                        <table class="table table-striped text-center">
-                                            <tbody>
-                                                <tr class='row' v-for="tag in bdbaikeTags">
-                                                    <td style='width: 50%'> 标签 </td>
-                                                    <td style='width: 50%'>{{tag}}</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div><!-- /.box-body -->
-                                </div><!-- /.box -->
-                            </section>
-                        </div>
+                                </div>
+                                <div class="box-body">
+                                    <table class="table table-striped text-center">
+                                        <tbody>
+                                        <tr class='row' v-for="category in categories">
+                                            <td style='width: 50%'> Category</td>
+                                            <td style='width: 50%'>{{category}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div><!-- /.box-body -->
+                            </div><!-- /.box -->
+                        </section>
                     </div>
-
                 </div>
+
+
+            </div>
         </section><!-- /.Main content -->
     </aside><!-- /.right-side -->
 </div><!-- ./wrapper -->
@@ -205,100 +230,154 @@
 <script src="${pageContext.request.contextPath}/js/youe_echarts.js"></script>
 <script>
 
-    var entityName = '${param.entity}'
-    var kg = '${param.kg}'
-    var entityInfo
+    var myChart = echarts.init(document.getElementById('graph'))
 
-    $.ajaxSettings.async = false;
+    const result = new Vue({
+        el: "#search-result",
+        data: {
+            mention: '${param.mention}',
+            entityName: '${param.entity}',
+            kgBase: '${param.kg_base}',
+            allInfo: JSON.parse("{}"),
+            sameAs: "",
+            bdbaikeIsActive: true,
+            zhwikiIsActive: false,
+            hdbaikeIsActive: false,
+        },
+        computed: {
+            information: function () {
+                return this.allInfo["DESC"]
+            },
+            types: function () {
+                return this.allInfo["TYPE"]
+            },
+            categories: function () {
+                return this.allInfo["CATEGORY"]
+            },
+            tags: function () {
+                return this.allInfo["TAG"]
+            },
+            infoboxes: function () {
+                const ib = new Map();
+                const illegalKey = new Set(["DESC", "TAG", "TYPE", "CATEGORY_ZH", "CATEGORY"]);
+                $.each(this.allInfo, function (key, value) {
+                    if (!illegalKey.has(key)) {
+                        ib[key] = value;
+                    }
+                })
+                return ib;
+            }
+
+        },
+        methods: {
+            isHidden: function (item) {
+                return getLength(item) <= 0;
+            }
+        },
+        watch: {
+            infoboxes: function () {
+                alert(getLength(this.infoboxes))
+                draw_kg(result.entityName, result.allInfo, myChart, kg_option_1, document.getElementById('graph')),
+                window.onresize = function () {
+                    myChart.resize();
+                };
+            }
+        }
+    });
+
     $.ajax({
         url: "${pageContext.request.contextPath}/search/info.do",
         type: "GET",
-        data :{
-            entity: entityName
+        data: {
+            entity: result.entityName,
+            kg_base: 'zhwiki'
         },
         dataType: "json",
-        beforeSend:function(){
+        beforeSend: function () {
             console.log('发送前')
         },
-        success:function(data){
-            entityInfo = data
+        success: function (data) {
+            result.allInfo = data
             console.log(data)
         },
-        error:function(xhr,textStatus){
+        error: function (xhr, textStatus) {
             console.log('错误')
             console.log(xhr)
             console.log(textStatus)
         },
-        complete:function(){
+        complete: function () {
             console.log('结束')
         }
     })
 
-    new Vue({
-        el: "#search-result",
-        data: {
-            bdbaikeInfo: entityInfo["bdbaike"],
-            bdbaikeInformation: entityInfo["bdbaike"]["DESC"],
-            bdbaikeTypes: entityInfo["bdbaike"]["TYPE"],
-            bdbaikeTags: entityInfo["bdbaike"]["TAG"],
 
-            zhwikiInfo: entityInfo["zhwiki"],
-            zhwikiInformation: entityInfo["zhwiki"]["DESC"],
-            zhwikiCategories: entityInfo["zhwiki"]["CATEGORY"],
+    <%--var entityName = '${param.entity}'--%>
+    <%--var kg = '${param.kg}'--%>
+    <%--var entityInfo--%>
 
-            bdbaikeIsActive: kg === "bdbaike",
-            zhwikiIsActive: kg === "zhwiki"
-        },
-        computed: {
-            bdbaikeInfoboxes: function () {
-                var ib = new Map();
-                var illegalKey = new Set(["DESC", "TAG", "TYPE", "CATEGORY_ZH"])
-                $.each(this.bdbaikeInfo, function (key, value) {
-                    if (!illegalKey.has(key)) {
-                        ib[key] = value;
-                    }
-                })
-                return ib;
-            },
-            zhwikiInfoboxes: function () {
-                var ib = new Map();
-                var illegalKey = new Set(["DESC", "CATEGORY"])
-                $.each(this.zhwikiInfo, function (key, value) {
-                    if (!illegalKey.has(key)) {
-                        ib[key] = value;
-                    }
-                })
-                return ib;
-            },
+    <%--$.ajaxSettings.async = false;--%>
 
-            isHidden: function () {
-                return {
-                    bdbaikeInformation: typeof(entityInfo["bdbaike"]["DESC"]) === "undefined",
-                    bdbaikeInfobox: getLength(this.bdbaikeInfoboxes) === 0,
-                    bdbaikeDBpediaType: typeof(entityInfo["bdbaike"]["TYPE"]) === "undefined",
-                    bdbaikeBaiduBaikeTag: typeof(entityInfo["bdbaike"]["TAG"]) === "undefined",
 
-                    zhwikiInformation: typeof(entityInfo["zhwiki"]["DESC"]) === "undefined",
-                    zhwikiInfobox: getLength(this.zhwikiInfoboxes) === 0,
-                    zhwikiCategory: typeof(entityInfo["zhwiki"]["CATEGORY"]) === "undefined"
-                }
-            }
-        },
-    })
+    <%--new Vue({--%>
+    <%--el: "#search-result",--%>
+    <%--data: {--%>
+    <%--bdbaikeInfo: entityInfo["bdbaike"],--%>
+    <%--bdbaikeInformation: entityInfo["bdbaike"]["DESC"],--%>
+    <%--bdbaikeTypes: entityInfo["bdbaike"]["TYPE"],--%>
+    <%--bdbaikeTags: entityInfo["bdbaike"]["TAG"],--%>
 
-    var bdbaikeChart = echarts.init(document.getElementById('bdbaike-graph'));
-    window.onresize = function () {
-        bdbaikeChart.resize();
-    };
-    draw_kg(entityName, entityInfo["bdbaike"],bdbaikeChart, kg_option_1, document.getElementById('bdbaike-graph'))
-    bdbaikeChart.resize();
+    <%--zhwikiInfo: entityInfo["zhwiki"],--%>
+    <%--zhwikiInformation: entityInfo["zhwiki"]["DESC"],--%>
+    <%--zhwikiCategories: entityInfo["zhwiki"]["CATEGORY"],--%>
 
-    // var zhwikiChart = echarts.init(document.getElementById('zhwiki-graph'));
-    // window.onresize = function () {
-    //     zhwikiChart.resize();
-    // };
-    // draw_kg(entityName, entityInfo["zhwiki"],zhwikiChart, kg_option_1, document.getElementById('zhwiki-graph'))
-    // zhwikiChart.resize();
+    <%--bdbaikeIsActive: kg === "bdbaike",--%>
+    <%--zhwikiIsActive: kg === "zhwiki"--%>
+    <%--},--%>
+    <%--computed: {--%>
+    <%--bdbaikeInfoboxes: function () {--%>
+    <%--var ib = new Map();--%>
+    <%--var illegalKey = new Set(["DESC", "TAG", "TYPE", "CATEGORY_ZH"])--%>
+    <%--$.each(this.bdbaikeInfo, function (key, value) {--%>
+    <%--if (!illegalKey.has(key)) {--%>
+    <%--ib[key] = value;--%>
+    <%--}--%>
+    <%--})--%>
+    <%--return ib;--%>
+    <%--},--%>
+    <%--zhwikiInfoboxes: function () {--%>
+    <%--var ib = new Map();--%>
+    <%--var illegalKey = new Set(["DESC", "CATEGORY"])--%>
+    <%--$.each(this.zhwikiInfo, function (key, value) {--%>
+    <%--if (!illegalKey.has(key)) {--%>
+    <%--ib[key] = value;--%>
+    <%--}--%>
+    <%--})--%>
+    <%--return ib;--%>
+    <%--},--%>
+
+    <%--isHidden: function () {--%>
+    <%--return {--%>
+    <%--bdbaikeInformation: typeof(entityInfo["bdbaike"]["DESC"]) === "undefined",--%>
+    <%--bdbaikeInfobox: getLength(this.bdbaikeInfoboxes) === 0,--%>
+    <%--bdbaikeDBpediaType: typeof(entityInfo["bdbaike"]["TYPE"]) === "undefined",--%>
+    <%--bdbaikeBaiduBaikeTag: typeof(entityInfo["bdbaike"]["TAG"]) === "undefined",--%>
+
+    <%--zhwikiInformation: typeof(entityInfo["zhwiki"]["DESC"]) === "undefined",--%>
+    <%--zhwikiInfobox: getLength(this.zhwikiInfoboxes) === 0,--%>
+    <%--zhwikiCategory: typeof(entityInfo["zhwiki"]["CATEGORY"]) === "undefined"--%>
+    <%--}--%>
+    <%--}--%>
+    <%--},--%>
+    <%--})--%>
+
+
+
+    <%--// var zhwikiChart = echarts.init(document.getElementById('zhwiki-graph'));--%>
+    <%--// window.onresize = function () {--%>
+    <%--//     zhwikiChart.resize();--%>
+    <%--// };--%>
+    <%--// draw_kg(entityName, entityInfo["zhwiki"],zhwikiChart, kg_option_1, document.getElementById('zhwiki-graph'))--%>
+    <%--// zhwikiChart.resize();--%>
 
     function getLength(map) {
         var size = 0;
