@@ -127,4 +127,17 @@ public class QueryController {
     public Map<String, List<String>> attrOfEntity(String entity, String attribute) {
         return queryService.getOneInfoByEntityAndAttribute(entity, attribute);
     }
+
+    /**
+     * 通过某个知识库中的实体名字查找其他知识库的sameas 实体
+     * @param entity
+     * @param kg_base
+     * @return
+     */
+    @RequestMapping(value = "/sameAs.do", params = {"entity", "kg_base"})
+    @ResponseBody
+    public Map<String, List<String>> sameasFromOneBase(String entity, String kg_base) {
+        return queryService.getSameAsAboutOneKGBase(kg_base, entity);
+    }
+
 }
