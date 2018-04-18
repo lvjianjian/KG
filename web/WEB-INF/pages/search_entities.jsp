@@ -192,7 +192,7 @@
         },
         methods: {
             search: function (entity) {
-                window.location.href='${pageContext.request.contextPath}/view/search?mention='+mention+'&entity='+entity+'&kg=zhwiki';
+                window.location.href='${pageContext.request.contextPath}/view/search?mention='+mention+'&entity='+entity+'&kg_base=zhwiki';
             }
         }
     })
